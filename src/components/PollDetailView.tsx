@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
 import { Pencil, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useUserRole } from '@/hooks/use-user-role'; // Import useUserRole
 
 interface PollDetailViewProps {
   poll: Poll;
@@ -21,6 +22,7 @@ interface PollDetailViewProps {
 
 const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const { user } = useSupabaseSession();
+  const { isAdmin, isLoading: isRoleLoading } = useUserRole(); // Get admin status
   const currentUserId = useCurrentUserId();
   const isPollOwner = currentUserId === poll.user_id;
   const navigate = useNavigate();
@@ -69,6 +71,10 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const handleSubmitVote = async () => {
     if (!user) {
       showError("You must be logged in to vote.");
+      return;
+    }
+    if (isAdmin) {
+      showError("Admins cannot cast votes.");
       return;
     }
 
@@ -239,7 +245,13 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {isLoadingVotes ? (
+        {isRoleLoading ? (
+          <div className="text-center text-muted-foreground">Loading user role...</div>
+        ) : isAdmin ? (
+          <div className="p-4 bg-blue-100 text-blue-800 rounded-md dark:bg-blue-900 dark:text-blue-200">
+            As an administrator, you are viewing this poll for management purposes. Voting is disabled for admin accounts.
+          </div>
+        ) : isLoadingVotes ? (
           <div className="text-center text-muted-foreground">Checking vote status...</div>
         ) : isPollScheduled ? (
           <div className="p-4 bg-yellow-100 text-yellow-800 rounded-md dark:bg-yellow-900 dark:text-yellow-200">
