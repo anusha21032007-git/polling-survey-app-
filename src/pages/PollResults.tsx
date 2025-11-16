@@ -1,35 +1,60 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { usePoll } from '@/hooks/use-poll';
+import { usePolls } from '@/hooks/use-polls';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import PollResultsView from '@/components/PollResultsView';
+import PollResultSummaryCard from '@/components/PollResultSummaryCard';
 
-const PollResults: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const pollId = id || '';
-  
-  // Fetch poll details to get options and title
-  const { data: poll, isLoading, isError, error } = usePoll(pollId);
+// Component for the list view of all poll results
+const PollResultsList: React.FC = () => {
+  const { data: polls, isLoading, isError, error } = usePolls();
 
-  if (!pollId) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold">Poll Results & Analytics</h1>
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      <h1 className="text-3xl font-bold">Poll Results & Analytics</h1>
+      <p className="text-muted-foreground">
+        Here is a summary of all polls. Click on a poll to see a detailed breakdown of the results.
+      </p>
+      
+      {isLoading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader><Skeleton className="h-6 w-3/4" /></CardHeader>
+              <CardContent><Skeleton className="h-8 w-1/2" /></CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {isError && (
+        <div className="text-destructive">Error loading polls: {error?.message}</div>
+      )}
+
+      {!isLoading && !isError && polls && polls.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {polls.map(poll => (
+            <PollResultSummaryCard key={poll.id} poll={poll} />
+          ))}
+        </div>
+      )}
+
+      {!isLoading && !isError && (!polls || polls.length === 0) && (
         <Card>
-          <CardHeader>
-            <CardTitle>Select a Poll</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Please navigate to a specific poll's detail page to view its results. 
-              (e.g., /polls/&lt;poll_id&gt;/results)
-            </p>
+          <CardContent className="p-10 text-center">
+            <p className="text-muted-foreground">No polls found to display results for.</p>
           </CardContent>
         </Card>
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
+};
+
+// Component for the detail view of a single poll's results
+const PollResultsDetail: React.FC<{ pollId: string }> = ({ pollId }) => {
+  const { data: poll, isLoading, isError, error } = usePoll(pollId);
 
   if (isLoading) {
     return (
@@ -66,6 +91,17 @@ const PollResults: React.FC = () => {
       <PollResultsView poll={poll} />
     </div>
   );
+};
+
+const PollResults: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const pollId = id || '';
+  
+  if (pollId) {
+    return <PollResultsDetail pollId={pollId} />;
+  }
+
+  return <PollResultsList />;
 };
 
 export default PollResults;
