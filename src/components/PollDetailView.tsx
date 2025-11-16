@@ -142,17 +142,13 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
     if (!poll.is_active) {
       return <Badge variant="destructive">Closed (Manually)</Badge>;
     }
-    if (poll.ends_at && new Date(poll.ends_at) < new Date()) {
+    if (poll.due_at && new Date(poll.due_at) < new Date()) {
       return <Badge variant="destructive">Closed (Expired)</Badge>;
-    }
-    if (poll.starts_at && new Date(poll.starts_at) > new Date()) {
-      return <Badge variant="secondary">Scheduled</Badge>;
     }
     return <Badge variant="default">Active</Badge>;
   };
 
-  const isPollActive = poll.is_active && (!poll.ends_at || new Date(poll.ends_at) > new Date()) && (!poll.starts_at || new Date(poll.starts_at) <= new Date());
-  const isPollScheduled = poll.starts_at && new Date(poll.starts_at) > new Date();
+  const isPollActive = poll.is_active && (!poll.due_at || new Date(poll.due_at) > new Date());
 
   return (
     <Card>
@@ -198,6 +194,9 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
         )}
         <p className="text-sm text-muted-foreground pt-2">
           Created on: {format(new Date(poll.created_at), 'PPP')}
+          {poll.due_at && (
+            <span> | Due: {format(new Date(poll.due_at), 'PPP p')}</span>
+          )}
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -209,10 +208,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
           </div>
         ) : isLoadingVotes ? (
           <div className="text-center text-muted-foreground">Checking vote status...</div>
-        ) : isPollScheduled ? (
-          <div className="p-4 bg-yellow-100 text-yellow-800 rounded-md dark:bg-yellow-900 dark:text-yellow-200">
-            This poll is scheduled to start on {format(new Date(poll.starts_at!), 'PPP')}. Voting is not yet open.
-          </div>
         ) : !isPollActive ? (
           <div className="p-4 bg-red-100 text-red-800 rounded-md dark:bg-red-900 dark:text-red-200">
             This poll is closed and cannot accept new votes.

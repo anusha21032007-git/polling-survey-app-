@@ -57,7 +57,7 @@ const EditPoll: React.FC = () => {
 
   const handleSubmit = async (data: PollFormValues) => {
     setIsSubmitting(true);
-    const { title, description, poll_type, options, is_active, starts_at, ends_at } = data;
+    const { title, description, poll_type, options, is_active, due_at } = data;
     const cleanOptions = options.filter(opt => opt.text.trim() !== '');
 
     if (cleanOptions.length < 2) {
@@ -72,8 +72,7 @@ const EditPoll: React.FC = () => {
       poll_type,
       options: cleanOptions,
       is_active,
-      starts_at: starts_at ? starts_at.toISOString() : null,
-      ends_at: ends_at ? ends_at.toISOString() : null,
+      due_at: due_at ? due_at.toISOString() : null,
     };
 
     const { error } = await supabase.from('polls').update(updatedPoll).eq('id', pollId);
@@ -116,7 +115,7 @@ const EditPoll: React.FC = () => {
           poll={poll} 
           onSubmit={handleSubmit} 
           isSubmitting={isSubmitting}
-          onDelete={() => {}} // Dummy prop to satisfy type, real trigger is below
+          onDelete={handleDelete} // Pass the actual delete handler here
           isDeleting={isDeleting}
         />
         <div className="flex justify-end space-x-4 pt-4">

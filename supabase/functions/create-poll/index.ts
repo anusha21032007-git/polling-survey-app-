@@ -15,8 +15,7 @@ interface PollCreationPayload {
   poll_type: 'single' | 'multiple';
   options: { id: string; text: string }[];
   is_active: boolean;
-  starts_at: string | null;
-  ends_at: string | null;
+  due_at: string | null; // Changed from starts_at/ends_at
 }
 
 serve(async (req) => {
@@ -53,7 +52,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: 'Invalid JSON payload' }), { status: 400, headers: corsHeaders })
   }
 
-  const { title, description, poll_type, options, is_active, starts_at, ends_at } = payload;
+  const { title, description, poll_type, options, is_active, due_at } = payload;
 
   // Basic Server-side Validation
   if (!title || options.length < 2) {
@@ -75,8 +74,7 @@ serve(async (req) => {
     poll_type,
     options: options.map(opt => ({ id: opt.id, text: opt.text.trim() })),
     is_active,
-    starts_at,
-    ends_at,
+    due_at,
   };
 
   // Insert the poll

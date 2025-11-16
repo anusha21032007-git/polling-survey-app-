@@ -13,7 +13,6 @@ export interface Poll {
   poll_type: PollType;
   options: PollOption[];
   is_active: boolean;
-  starts_at: string | null;
-  ends_at: string | null;
+  due_at: string | null; // Replaced starts_at and ends_at
   created_at: string;
 }

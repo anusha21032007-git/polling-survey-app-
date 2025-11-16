@@ -7,14 +7,10 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Plus, Trash2, CalendarIcon } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Poll } from '@/types/poll';
-import { Switch } from '@/components/ui/switch';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import DateTimePicker from './DateTimePicker';
 
 // Utility to generate a simple unique ID for form options
 const generateOptionId = () => Math.random().toString(36).substring(2, 9);
@@ -30,8 +26,7 @@ const formSchema = z.object({
   poll_type: z.enum(['single', 'multiple']),
   options: z.array(optionSchema).min(2, "A poll must have at least two options."),
   is_active: z.boolean().default(true),
-  starts_at: z.date().optional().nullable(),
-  ends_at: z.date().optional().nullable(),
+  due_at: z.date().optional().nullable(),
 }).superRefine((data, ctx) => {
   // Custom validation for unique options
   const optionTexts = data.options.map(opt => opt.text.trim().toLowerCase()).filter(text => text.length > 0);
@@ -45,12 +40,12 @@ const formSchema = z.object({
     });
   }
 
-  // Validation for start/end dates
-  if (data.starts_at && data.ends_at && data.starts_at >= data.ends_at) {
+  // Validation for due date/time: must be in the future if set
+  if (data.due_at && data.due_at <= new Date()) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "End date must be after the start date.",
-      path: ['ends_at'],
+      message: "Due date and time must be in the future.",
+      path: ['due_at'],
     });
   }
 });
@@ -76,8 +71,7 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting, onDel
       { id: generateOptionId(), text: "" },
     ],
     is_active: poll?.is_active ?? true,
-    starts_at: poll?.starts_at ? new Date(poll.starts_at) : null,
-    ends_at: poll?.ends_at ? new Date(poll.ends_at) : null,
+    due_at: poll?.due_at ? new Date(poll.due_at) : null,
   };
 
   const form = useForm<PollFormValues>({
@@ -210,54 +204,27 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting, onDel
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="starts_at"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Start Date (Optional)</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP") : <span>Pick a start date</span>}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="ends_at"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>End Date (Optional)</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP") : <span>Pick an end date</span>}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            
+            <FormField
+              control={form.control}
+              name="due_at"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Due Date & Time (Optional)</FormLabel>
+                  <FormControl>
+                    <DateTimePicker
+                      label="Pick a due date and time"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Voting will automatically close after this date and time.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
 
