@@ -3,15 +3,11 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { LogOut } from 'lucide-react';
 import { useSupabaseSession } from '@/integrations/supabase/session-context';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { showError } from '@/utils/toast';
 import Sidebar from './Sidebar';
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC = () => {
   const { user } = useSupabaseSession();
   const navigate = useNavigate();
 
@@ -47,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex-grow p-8 overflow-auto">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>
