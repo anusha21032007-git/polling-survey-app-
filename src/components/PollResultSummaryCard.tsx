@@ -15,7 +15,8 @@ const PollResultSummaryCard: React.FC<PollResultSummaryCardProps> = ({ poll }) =
 
   const totalVotes = React.useMemo(() => {
     if (!results) return 0;
-    return results.reduce((sum, result) => sum + result.count, 0);
+    // Access totalVotes directly from the results object
+    return results.totalVotes;
   }, [results]);
 
   return (
