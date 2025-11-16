@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import CreatePoll from "./pages/CreatePoll";
 import PollResults from "./pages/PollResults";
+import PollDetail from "./pages/PollDetail"; // Import the new page
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/create-poll" element={<CreatePoll />} />
                 <Route path="/poll-results" element={<PollResults />} />
+                <Route path="/polls/:id" element={<PollDetail />} /> {/* New Poll Detail Route */}
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               </Route>
             </Route>
