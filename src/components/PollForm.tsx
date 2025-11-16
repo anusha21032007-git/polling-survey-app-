@@ -6,23 +6,52 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Plus, Trash2 } from 'lucide-react';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Plus, Trash2, CalendarIcon } from 'lucide-react';
 import { PollOption } from '@/types/poll';
+import { Switch } from '@/components/ui/switch';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 // Utility to generate a simple unique ID for form options
 const generateOptionId = () => Math.random().toString(36).substring(2, 9);
 
 const optionSchema = z.object({
   id: z.string(),
-  text: z.string().min(1, "Option text is required"),
+  text: z.string().min(1, "Option text is required").max(200, "Option text must be 200 characters or less."),
 });
 
 const formSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters."),
-  description: z.string().optional(),
+  title: z.string().min(5, "Title must be at least 5 characters.").max(200, "Title must be 200 characters or less."),
+  description: z.string().max(1000, "Description must be 1000 characters or less.").optional().or(z.literal('')),
   poll_type: z.enum(['single', 'multiple']),
   options: z.array(optionSchema).min(2, "A poll must have at least two options."),
+  is_active: z.boolean().default(true),
+  starts_at: z.date().optional().nullable(),
+  ends_at: z.date().optional().nullable(),
+}).superRefine((data, ctx) => {
+  // Custom validation for unique options
+  const optionTexts = data.options.map(opt => opt.text.trim().toLowerCase()).filter(text => text.length > 0);
+  const uniqueOptionTexts = new Set(optionTexts);
+
+  if (optionTexts.length !== uniqueOptionTexts.size) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "All poll options must be unique.",
+      path: ['options'],
+    });
+  }
+
+  // Validation for start/end dates
+  if (data.starts_at && data.ends_at && data.starts_at >= data.ends_at) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "End date must be after the start date.",
+      path: ['ends_at'],
+    });
+  }
 });
 
 export type PollFormValues = z.infer<typeof formSchema>;
@@ -43,6 +72,9 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
         { id: generateOptionId(), text: "" },
         { id: generateOptionId(), text: "" },
       ],
+      is_active: true,
+      starts_at: null,
+      ends_at: null,
     },
   });
 
@@ -58,6 +90,8 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        
+        {/* Title */}
         <FormField
           control={form.control}
           name="title"
@@ -67,11 +101,13 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
               <FormControl>
                 <Input placeholder="e.g., What is your favorite color?" {...field} />
               </FormControl>
+              <FormDescription>Max 200 characters.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {/* Description */}
         <FormField
           control={form.control}
           name="description"
@@ -81,11 +117,13 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
               <FormControl>
                 <Textarea placeholder="Provide more context for your poll." {...field} />
               </FormControl>
+              <FormDescription>Max 1000 characters.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {/* Poll Type */}
         <FormField
           control={form.control}
           name="poll_type"
@@ -121,6 +159,7 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
           )}
         />
 
+        {/* Options */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Options</h3>
           {fields.map((item, index) => (
@@ -131,7 +170,7 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
                 render={({ field }) => (
                   <FormItem className="flex-grow">
                     <FormControl>
-                      <Input placeholder={`Option ${index + 1}`} {...field} />
+                      <Input placeholder={`Option ${index + 1} (Max 200 chars)`} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -158,6 +197,115 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
               {form.formState.errors.options.message}
             </p>
           )}
+        </div>
+        
+        {/* Scheduling and Active Status */}
+        <div className="space-y-4 pt-4 border-t">
+          <h3 className="text-lg font-semibold">Settings & Scheduling</h3>
+          
+          {/* Is Active Switch */}
+          <FormField
+            control={form.control}
+            name="is_active"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">
+                    Poll Status
+                  </FormLabel>
+                  <FormDescription>
+                    If disabled, the poll will not be visible to voters.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Starts At Date Picker */}
+            <FormField
+              control={form.control}
+              name="starts_at"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Start Date (Optional)</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? format(field.value, "PPP") : <span>Pick a start date</span>}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value || undefined}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription>
+                    Poll will automatically become active on this date.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Ends At Date Picker */}
+            <FormField
+              control={form.control}
+              name="ends_at"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>End Date (Optional)</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? format(field.value, "PPP") : <span>Pick an end date</span>}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value || undefined}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription>
+                    Poll will automatically close after this date.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>

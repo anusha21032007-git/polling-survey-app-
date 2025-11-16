@@ -12,5 +12,8 @@ export interface Poll {
   description: string | null;
   poll_type: PollType;
   options: PollOption[];
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
   created_at: string;
 }

@@ -21,7 +21,7 @@ const CreatePoll: React.FC = () => {
 
     setIsSubmitting(true);
 
-    const { title, description, poll_type, options } = data;
+    const { title, description, poll_type, options, is_active, starts_at, ends_at } = data;
 
     // Ensure options are clean (remove empty strings)
     const cleanOptions = options.filter(opt => opt.text.trim() !== '');
@@ -38,6 +38,10 @@ const CreatePoll: React.FC = () => {
       description: description?.trim() || null,
       poll_type,
       options: cleanOptions,
+      is_active,
+      // Convert Date objects to ISO strings for Supabase
+      starts_at: starts_at ? starts_at.toISOString() : null,
+      ends_at: ends_at ? ends_at.toISOString() : null,
     };
 
     const { error } = await supabase
