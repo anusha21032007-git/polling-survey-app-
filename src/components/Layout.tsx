@@ -57,11 +57,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link to="/">
                 <Button variant="ghost">Home</Button>
               </Link>
-              <Link to="/create-poll">
-                <Button variant="ghost">
-                  <Plus className="h-4 w-4 mr-2" /> Create Poll
-                </Button>
-              </Link>
               <Link to="/poll-results">
                 <Button variant="ghost">
                   <BarChart3 className="h-4 w-4 mr-2" /> Results
