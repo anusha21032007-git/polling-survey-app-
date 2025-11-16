@@ -5,10 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import PollForm, { PollFormValues } from '@/components/PollForm';
 import { showSuccess, showError } from '@/utils/toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useQueryClient } from '@tanstack/react-query';
 
 const CreatePoll: React.FC = () => {
   const { user } = useSupabaseSession();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (data: PollFormValues) => {
@@ -49,6 +51,8 @@ const CreatePoll: React.FC = () => {
       showError('Failed to create poll. Please try again.');
     } else {
       showSuccess('Poll created successfully!');
+      // Invalidate the polls query so the list updates immediately
+      queryClient.invalidateQueries({ queryKey: ['polls'] }); 
       navigate('/'); 
     }
   };
