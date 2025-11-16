@@ -1,16 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
-
 import { MadeWithDyad } from "@/components/made-with-dyad";
+import { useSupabaseSession } from "@/integrations/supabase/session-context";
 
 const Index = () => {
+  const { user } = useSupabaseSession();
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">
-          Start building your amazing project here!
-        </p>
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Welcome to the Polling Dashboard, {user?.email}!</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Placeholder for Poll Creation Card */}
+        <div className="p-6 border rounded-lg shadow-sm bg-card">
+          <h2 className="text-xl font-semibold mb-2">Create a New Poll</h2>
+          <p className="text-muted-foreground">Start gathering opinions right away.</p>
+        </div>
+        
+        {/* Placeholder for My Polls Card */}
+        <div className="p-6 border rounded-lg shadow-sm bg-card">
+          <h2 className="text-xl font-semibold mb-2">My Active Polls</h2>
+          <p className="text-muted-foreground">View, manage, and delete your existing polls.</p>
+        </div>
+
+        {/* Placeholder for Available Polls Card */}
+        <div className="p-6 border rounded-lg shadow-sm bg-card">
+          <h2 className="text-xl font-semibold mb-2">Available Polls</h2>
+          <p className="text-muted-foreground">Vote on polls created by others.</p>
+        </div>
       </div>
+
       <MadeWithDyad />
     </div>
   );
