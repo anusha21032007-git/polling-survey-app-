@@ -3,14 +3,28 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, PlusSquare, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useUserRole } from '@/hooks/use-user-role';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const SidebarNav = () => {
   const location = useLocation();
   const pathname = location.pathname;
+  const { isAdmin, isLoading: isRoleLoading } = useUserRole();
+
+  if (isRoleLoading) {
+    return (
+      <div className="space-y-2 p-2">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+    );
+  }
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/create-poll', label: 'Create Poll', icon: PlusSquare },
+    // Only show 'Create Poll' if the user is NOT an admin
+    ...(!isAdmin ? [{ href: '/create-poll', label: 'Create Poll', icon: PlusSquare }] : []),
     { href: '/poll-results', label: 'Results', icon: BarChart3 },
   ];
 
