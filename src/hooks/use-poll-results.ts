@@ -2,16 +2,27 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { showError } from '@/utils/toast';
 
+interface VoteRecord {
+  option_id: string;
+  user_id: string;
+}
+
 interface VoteCount {
   option_id: string;
   count: number;
 }
 
-const fetchPollResults = async (pollId: string): Promise<VoteCount[]> => {
-  // Fetch all votes for the given poll ID
+export interface PollResultsData {
+  voteCounts: VoteCount[];
+  totalVotes: number;
+  uniqueVoters: number;
+}
+
+const fetchPollResults = async (pollId: string): Promise<PollResultsData> => {
+  // Fetch all votes for the given poll ID, including user_id
   const { data, error } = await supabase
     .from('votes')
-    .select('option_id')
+    .select('option_id, user_id')
     .eq('poll_id', pollId);
 
   if (error) {
@@ -20,24 +31,32 @@ const fetchPollResults = async (pollId: string): Promise<VoteCount[]> => {
     throw new Error(error.message);
   }
 
-  // Aggregate votes by option_id
-  const voteCountsMap = data.reduce((acc, vote) => {
+  const votes = data as VoteRecord[];
+  
+  // 1. Aggregate votes by option_id
+  const voteCountsMap = votes.reduce((acc, vote) => {
     const optionId = vote.option_id;
     acc.set(optionId, (acc.get(optionId) || 0) + 1);
     return acc;
   }, new Map<string, number>());
 
-  // Convert map to array of VoteCount objects
-  const results: VoteCount[] = Array.from(voteCountsMap, ([option_id, count]) => ({
+  // 2. Calculate total votes
+  const totalVotes = votes.length;
+
+  // 3. Calculate unique voters
+  const uniqueVoters = new Set(votes.map(vote => vote.user_id)).size;
+
+  // 4. Convert map to array of VoteCount objects
+  const voteCounts: VoteCount[] = Array.from(voteCountsMap, ([option_id, count]) => ({
     option_id,
     count,
   }));
 
-  return results;
+  return { voteCounts, totalVotes, uniqueVoters };
 };
 
 export const usePollResults = (pollId: string) => {
-  return useQuery<VoteCount[], Error>({
+  return useQuery<PollResultsData, Error>({
     queryKey: ['pollResults', pollId],
     queryFn: () => fetchPollResults(pollId),
     enabled: !!pollId,
