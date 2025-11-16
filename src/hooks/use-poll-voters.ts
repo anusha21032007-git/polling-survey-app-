@@ -28,11 +28,13 @@ const fetchPollVoters = async (pollId: string): Promise<Voter[]> => {
   data.forEach((voteRecord: any) => {
     const userId = voteRecord.user_id;
     if (!uniqueVotersMap.has(userId)) {
-      const profile = voteRecord.profiles;
+      // Ensure profile data is handled safely, even if null
+      const profile = Array.isArray(voteRecord.profiles) ? voteRecord.profiles[0] : voteRecord.profiles;
+      
       uniqueVotersMap.set(userId, {
         user_id: userId,
-        username: profile?.username,
-        full_name: profile?.full_name,
+        username: profile?.username || null,
+        full_name: profile?.full_name || null,
       });
     }
   });
