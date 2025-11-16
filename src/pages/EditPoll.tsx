@@ -106,42 +106,39 @@ const EditPoll: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Edit Poll: {poll.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AlertDialog>
-            <PollForm 
-              poll={poll} 
-              onSubmit={handleSubmit} 
-              isSubmitting={isSubmitting}
-              onDelete={() => {}} // Dummy prop to satisfy type, real trigger is below
-              isDeleting={isDeleting}
-            />
-            <div className="flex justify-end space-x-4 pt-6 border-t">
-                <AlertDialogTrigger asChild>
-                    <Button variant="destructive" disabled={isSubmitting || isDeleting}>
-                        Delete Poll
-                    </Button>
-                </AlertDialogTrigger>
-            </div>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete this poll and all of its associated votes.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>Confirm Delete</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </CardContent>
-      </Card>
+    <div className="max-w-3xl mx-auto space-y-6">
+       <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Edit Poll</h1>
+        <p className="text-muted-foreground truncate">Editing: {poll.title}</p>
+      </div>
+      <AlertDialog>
+        <PollForm 
+          poll={poll} 
+          onSubmit={handleSubmit} 
+          isSubmitting={isSubmitting}
+          onDelete={() => {}} // Dummy prop to satisfy type, real trigger is below
+          isDeleting={isDeleting}
+        />
+        <div className="flex justify-end space-x-4 pt-4">
+            <AlertDialogTrigger asChild>
+                <Button variant="destructive" disabled={isSubmitting || isDeleting}>
+                    Delete Poll
+                </Button>
+            </AlertDialogTrigger>
+        </div>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this poll and all of its associated votes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Confirm Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Utility to generate a simple unique ID for form options
 const generateOptionId = () => Math.random().toString(36).substring(2, 9);
@@ -24,7 +25,7 @@ const optionSchema = z.object({
 });
 
 const formSchema = z.object({
-  title: z.string().min(5, "Poll Question must be at least 5 characters.").max(500, "Poll Question must be 500 characters or less."),
+  title: z.string().min(5, "Poll Title must be at least 5 characters.").max(500, "Poll Title must be 500 characters or less."),
   description: z.string().max(1000, "Description must be 1000 characters or less.").optional().or(z.literal('')),
   poll_type: z.enum(['single', 'multiple']),
   options: z.array(optionSchema).min(2, "A poll must have at least two options."),
@@ -95,176 +96,172 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting, onDel
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         
-        {/* Title / Poll Question */}
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg">Poll Question</FormLabel>
-              <FormControl>
-                <Textarea placeholder="e.g., What is your favorite color?" {...field} rows={3} />
-              </FormControl>
-              <FormDescription>The main question for your poll. Max 500 characters.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Poll Details Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Poll Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Poll Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., What is your favorite color?" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Briefly describe what this poll is about..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
 
-        {/* Description */}
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg">Description (Optional)</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Provide more context for your poll." {...field} />
-              </FormControl>
-              <FormDescription>Max 1000 characters.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Options Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Options</CardTitle>
+            <CardDescription>{fields.length} options added</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {fields.map((item, index) => (
+              <div key={item.id} className="flex items-center space-x-2">
+                <FormField
+                  control={form.control}
+                  name={`options.${index}.text`}
+                  render={({ field }) => (
+                    <FormItem className="flex-grow">
+                      <FormControl>
+                        <Input placeholder={`Option ${index + 1}`} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {fields.length > 2 && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => remove(index)}
+                    aria-label={`Remove option ${index + 1}`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button type="button" variant="outline" onClick={handleAddOption} className="w-full">
+              <Plus className="mr-2 h-4 w-4" /> Add Option
+            </Button>
+            {form.formState.errors.options && (
+              <p className="text-sm font-medium text-destructive">
+                {form.formState.errors.options.message}
+              </p>
+            )}
+          </CardContent>
+        </Card>
 
-        {/* Poll Type */}
-        <FormField
-          control={form.control}
-          name="poll_type"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel className="text-lg">Voting Options</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-2"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="single" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Single Choice (Voters can only pick one option)
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="multiple" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Multiple Choice (Voters can pick multiple options)
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Options */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Poll Options</h3>
-          {fields.map((item, index) => (
-            <div key={item.id} className="flex items-center space-x-2">
+        {/* Settings Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Settings</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
+              name="poll_type"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Voting Type</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-2"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl><RadioGroupItem value="single" /></FormControl>
+                        <FormLabel className="font-normal">Single Choice</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl><RadioGroupItem value="multiple" /></FormControl>
+                        <FormLabel className="font-normal">Multiple Choice</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name={`options.${index}.text`}
+                name="starts_at"
                 render={({ field }) => (
-                  <FormItem className="flex-grow">
-                    <FormControl>
-                      <Input placeholder={`Option ${index + 1} (Max 200 chars)`} {...field} />
-                    </FormControl>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Start Date (Optional)</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? format(field.value, "PPP") : <span>Pick a start date</span>}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {fields.length > 2 && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => remove(index)}
-                  aria-label={`Remove option ${index + 1}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
+              <FormField
+                control={form.control}
+                name="ends_at"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>End Date (Optional)</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? format(field.value, "PPP") : <span>Pick an end date</span>}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          ))}
-          <Button type="button" variant="outline" onClick={handleAddOption} className="w-full">
-            <Plus className="mr-2 h-4 w-4" /> Add Option
-          </Button>
-          {form.formState.errors.options && (
-            <p className="text-sm font-medium text-destructive">
-              {form.formState.errors.options.message}
-            </p>
-          )}
-        </div>
-        
-        {/* Scheduling and Active Status */}
-        <div className="space-y-4 pt-4 border-t">
-          <h3 className="text-lg font-semibold">Scheduling & Status</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="starts_at"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Start Date (Optional)</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? format(field.value, "PPP") : <span>Pick a start date</span>}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="ends_at"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>End Date (Optional)</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? format(field.value, "PPP") : <span>Pick an end date</span>}
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="flex justify-end space-x-4 pt-6 border-t">
+        <div className="flex justify-end space-x-4 pt-4">
           {poll && onDelete && (
             <Button type="button" variant="destructive" onClick={onDelete} disabled={isSubmitting || isDeleting}>
               {isDeleting ? "Deleting..." : "Delete Poll"}

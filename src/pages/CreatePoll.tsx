@@ -4,7 +4,6 @@ import { useSupabaseSession } from '@/integrations/supabase/session-context';
 import { supabase } from '@/integrations/supabase/client';
 import PollForm, { PollFormValues } from '@/components/PollForm';
 import { showSuccess, showError } from '@/utils/toast';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQueryClient } from '@tanstack/react-query';
 
 const CreatePoll: React.FC = () => {
@@ -72,15 +71,12 @@ const CreatePoll: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Create a New Poll</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <PollForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
-        </CardContent>
-      </Card>
+    <div className="max-w-3xl mx-auto space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Create New Poll</h1>
+        <p className="text-muted-foreground">Fill out the details below to create your poll.</p>
+      </div>
+      <PollForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
     </div>
   );
 };
