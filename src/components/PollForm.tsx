@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Plus, Trash2, CalendarIcon } from 'lucide-react';
-import { PollOption, Poll } from '@/types/poll';
+import { Poll } from '@/types/poll';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -24,7 +24,7 @@ const optionSchema = z.object({
 });
 
 const formSchema = z.object({
-  title: z.string().min(5, "Poll Question must be at least 5 characters.").max(200, "Poll Question must be 200 characters or less."),
+  title: z.string().min(5, "Poll Question must be at least 5 characters.").max(500, "Poll Question must be 500 characters or less."),
   description: z.string().max(1000, "Description must be 1000 characters or less.").optional().or(z.literal('')),
   poll_type: z.enum(['single', 'multiple']),
   options: z.array(optionSchema).min(2, "A poll must have at least two options."),
@@ -60,9 +60,11 @@ interface PollFormProps {
   poll?: Poll; // Optional poll data for editing
   onSubmit: (data: PollFormValues) => void;
   isSubmitting: boolean;
+  onDelete?: () => void; // Optional delete handler
+  isDeleting?: boolean;
 }
 
-const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => {
+const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting, onDelete, isDeleting }) => {
   
   const defaultValues: PollFormValues = {
     title: poll?.title || "",
@@ -93,7 +95,7 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         
         {/* Title / Poll Question */}
         <FormField
@@ -101,11 +103,11 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Poll Question</FormLabel>
+              <FormLabel className="text-lg">Poll Question</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., What is your favorite color?" {...field} />
+                <Textarea placeholder="e.g., What is your favorite color?" {...field} rows={3} />
               </FormControl>
-              <FormDescription>Max 200 characters.</FormDescription>
+              <FormDescription>The main question for your poll. Max 500 characters.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -117,7 +119,7 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description (Optional)</FormLabel>
+              <FormLabel className="text-lg">Description (Optional)</FormLabel>
               <FormControl>
                 <Textarea placeholder="Provide more context for your poll." {...field} />
               </FormControl>
@@ -127,25 +129,36 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
           )}
         />
 
-        {/* Poll Type (Allow Multiple Choice) */}
+        {/* Poll Type */}
         <FormField
           control={form.control}
           name="poll_type"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">
-                  Allow Multiple Choice
-                </FormLabel>
-                <FormDescription>
-                  If enabled, voters can select more than one option.
-                </FormDescription>
-              </div>
+            <FormItem className="space-y-3">
+              <FormLabel className="text-lg">Voting Options</FormLabel>
               <FormControl>
-                <Switch
-                  checked={field.value === 'multiple'}
-                  onCheckedChange={(checked) => field.onChange(checked ? 'multiple' : 'single')}
-                />
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-col space-y-2"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="single" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Single Choice (Voters can only pick one option)
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="multiple" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Multiple Choice (Voters can pick multiple options)
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -192,36 +205,10 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
           )}
         </div>
         
-        {/* Scheduling and Active Status (Keeping these for completeness) */}
+        {/* Scheduling and Active Status */}
         <div className="space-y-4 pt-4 border-t">
           <h3 className="text-lg font-semibold">Scheduling & Status</h3>
-          
-          {/* Is Active Switch */}
-          <FormField
-            control={form.control}
-            name="is_active"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">
-                    Poll Status
-                  </FormLabel>
-                  <FormDescription>
-                    If disabled, the poll will not be visible to voters.
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Starts At Date Picker */}
             <FormField
               control={form.control}
               name="starts_at"
@@ -233,10 +220,7 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
                       <FormControl>
                         <Button
                           variant={"outline"}
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
+                          className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value ? format(field.value, "PPP") : <span>Pick a start date</span>}
@@ -244,23 +228,13 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value || undefined}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
+                      <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>
-                    Poll will automatically become active on this date.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            {/* Ends At Date Picker */}
             <FormField
               control={form.control}
               name="ends_at"
@@ -272,10 +246,7 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
                       <FormControl>
                         <Button
                           variant={"outline"}
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
+                          className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value ? format(field.value, "PPP") : <span>Pick an end date</span>}
@@ -283,17 +254,9 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value || undefined}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
+                      <Calendar mode="single" selected={field.value || undefined} onSelect={field.onChange} initialFocus />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>
-                    Poll will automatically close after this date.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -301,9 +264,16 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
           </div>
         </div>
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? (poll ? "Updating Poll..." : "Creating Poll...") : (poll ? "Save Changes" : "Create Poll")}
-        </Button>
+        <div className="flex justify-end space-x-4 pt-6 border-t">
+          {poll && onDelete && (
+            <Button type="button" variant="destructive" onClick={onDelete} disabled={isSubmitting || isDeleting}>
+              {isDeleting ? "Deleting..." : "Delete Poll"}
+            </Button>
+          )}
+          <Button type="submit" disabled={isSubmitting || isDeleting}>
+            {isSubmitting ? (poll ? "Saving..." : "Posting...") : (poll ? "Save Changes" : "Post Poll")}
+          </Button>
+        </div>
       </form>
     </Form>
   );

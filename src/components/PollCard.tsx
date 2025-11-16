@@ -10,8 +10,8 @@ interface PollCardProps {
 
 const PollCard: React.FC<PollCardProps> = ({ poll }) => {
   return (
-    <Link to={`/polls/${poll.id}`} className="block">
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
+    <Link to={`/polls/${poll.id}`} className="block group">
+      <Card className="hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02] cursor-pointer h-full flex flex-col">
         <CardHeader>
           <div className="flex justify-between items-start">
             <CardTitle className="text-xl">{poll.title}</CardTitle>
