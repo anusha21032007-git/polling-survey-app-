@@ -12,7 +12,7 @@ import Layout from "./components/Layout";
 import CreatePoll from "./pages/CreatePoll";
 import PollResults from "./pages/PollResults";
 import PollDetail from "./pages/PollDetail";
-import EditPoll from "./pages/EditPoll"; // Import the new page
+import EditPoll from "./pages/EditPoll";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +33,8 @@ const App = () => (
                 <Route path="/create-poll" element={<CreatePoll />} />
                 <Route path="/poll-results" element={<PollResults />} />
                 <Route path="/polls/:id" element={<PollDetail />} />
-                <Route path="/polls/:id/edit" element={<EditPoll />} /> {/* New Edit Poll Route */}
+                <Route path="/polls/:id/edit" element={<EditPoll />} />
+                <Route path="/polls/:id/results" element={<PollResults />} /> {/* New Results Route */}
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               </Route>
             </Route>

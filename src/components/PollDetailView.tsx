@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
-import { Pencil } from 'lucide-react';
+import { Pencil, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface PollDetailViewProps {
@@ -127,7 +127,7 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
       showSuccess('Vote submitted successfully!');
       // Invalidate user votes query to update UI
       queryClient.invalidateQueries({ queryKey: ['userVotes', poll.id, user.id] });
-      // Optionally invalidate poll results query if we implement it later
+      // Invalidate poll results query to update results immediately if viewed
       queryClient.invalidateQueries({ queryKey: ['pollResults', poll.id] });
     }
   };
@@ -200,6 +200,18 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
             <Badge variant="secondary" className="capitalize">
               {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
             </Badge>
+            
+            {/* Results Button */}
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={() => navigate(`/polls/${poll.id}/results`)}
+              title="View Results"
+            >
+              <BarChart3 className="h-4 w-4" />
+            </Button>
+
+            {/* Edit Button (Owner only) */}
             {isPollOwner && (
               <Button 
                 variant="outline" 
