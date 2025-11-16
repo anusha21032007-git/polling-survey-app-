@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, Plus, BarChart3 } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useSupabaseSession } from '@/integrations/supabase/session-context';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { showError } from '@/utils/toast';
-import { useUserRole } from '@/hooks/use-user-role';
+import Sidebar from './Sidebar';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,7 +13,6 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user } = useSupabaseSession();
-  const { isRegularUser, isLoading: isRoleLoading } = useUserRole();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -26,45 +25,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   };
 
-  if (isRoleLoading) {
-    // Render a basic header while loading role data
-    return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <header className="sticky top-0 z-40 w-full border-b bg-card">
-          <div className="container flex h-16 items-center justify-between py-4">
-            <h1 className="text-xl font-bold">Polling App</h1>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground hidden sm:inline">Loading user data...</span>
-            </div>
-          </div>
-        </header>
-        <main className="flex-grow container py-8">
-          <div className="text-center p-10">Loading content...</div>
-        </main>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="sticky top-0 z-40 w-full border-b bg-card">
         <div className="container flex h-16 items-center justify-between py-4">
-          <h1 className="text-xl font-bold">Polling App</h1>
-          
-          {/* Navigation Links - Only visible to regular users */}
-          {isRegularUser && (
-            <nav className="hidden md:flex items-center space-x-4 mx-auto">
-              <Link to="/">
-                <Button variant="ghost">Home</Button>
-              </Link>
-              <Link to="/poll-results">
-                <Button variant="ghost">
-                  <BarChart3 className="h-4 w-4 mr-2" /> Results
-                </Button>
-              </Link>
-            </nav>
-          )}
-
+          <h1 className="text-xl font-bold">
+            <a href="/">Polling App</a>
+          </h1>
           <div className="flex items-center space-x-4">
             {user && (
               <span className="text-sm text-muted-foreground hidden sm:inline">
@@ -77,9 +44,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
       </header>
-      <main className="flex-grow container py-8">
-        {children}
-      </main>
+      <div className="flex flex-1">
+        <Sidebar />
+        <main className="flex-grow p-8 overflow-auto">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };
