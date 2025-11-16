@@ -138,55 +138,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
     }
   };
 
-  const renderOptions = () => {
-    if (isSingleChoice) {
-      return (
-        <RadioGroup
-          value={selectedOption as string}
-          onValueChange={handleSingleVoteChange}
-          className="space-y-3"
-          disabled={!poll.is_active || isSubmitting || isLoadingVotes}
-        >
-          {poll.options.map((option) => (
-            <label
-              key={option.id}
-              htmlFor={option.id}
-              className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-all duration-200 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:shadow-md"
-            >
-              <RadioGroupItem value={option.id} id={option.id} />
-              <span className="text-base font-medium flex-grow">{option.text}</span>
-            </label>
-          ))}
-        </RadioGroup>
-      );
-    } else {
-      // Multiple choice
-      return (
-        <div className="space-y-3">
-          {poll.options.map((option) => {
-            const currentSelections = Array.isArray(selectedOption) ? selectedOption : [];
-            const isChecked = currentSelections.includes(option.id);
-            return (
-              <label
-                key={option.id}
-                htmlFor={option.id}
-                className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-all duration-200 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:shadow-md"
-              >
-                <Checkbox
-                  id={option.id}
-                  checked={isChecked}
-                  onCheckedChange={(checked) => handleMultipleVoteChange(option.id, checked as boolean)}
-                  disabled={!poll.is_active || isSubmitting || isLoadingVotes}
-                />
-                <span className="text-base font-medium flex-grow">{option.text}</span>
-              </label>
-            );
-          })}
-        </div>
-      );
-    }
-  };
-
   const renderStatusBadge = () => {
     if (!poll.is_active) {
       return <Badge variant="destructive">Closed (Manually)</Badge>;
@@ -209,10 +160,15 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
         <div className="flex justify-between items-start">
           <CardTitle className="text-3xl">{poll.title}</CardTitle>
           <div className="flex space-x-2">
-            {renderStatusBadge()}
-            <Badge variant="secondary" className="capitalize">
-              {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
-            </Badge>
+            {/* Only render status and type badges if NOT admin */}
+            {!isAdmin && (
+              <>
+                {renderStatusBadge()}
+                <Badge variant="secondary" className="capitalize">
+                  {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
+                </Badge>
+              </>
+            )}
             
             {/* Results Button */}
             <Button 
@@ -267,7 +223,48 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
               {hasVoted ? 'Update Your Vote' : 'Cast Your Vote'}
             </h3>
             
-            {renderOptions()}
+            {/* Render options for voting */}
+            {isSingleChoice ? (
+              <RadioGroup
+                value={selectedOption as string}
+                onValueChange={(value) => setSelectedOption(value)}
+                className="space-y-3"
+                disabled={!poll.is_active || isSubmitting || isLoadingVotes}
+              >
+                {poll.options.map((option) => (
+                  <label
+                    key={option.id}
+                    htmlFor={option.id}
+                    className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-all duration-200 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:shadow-md"
+                  >
+                    <RadioGroupItem value={option.id} id={option.id} />
+                    <span className="text-base font-medium flex-grow">{option.text}</span>
+                  </label>
+                ))}
+              </RadioGroup>
+            ) : (
+              <div className="space-y-3">
+                {poll.options.map((option) => {
+                  const currentSelections = Array.isArray(selectedOption) ? selectedOption : [];
+                  const isChecked = currentSelections.includes(option.id);
+                  return (
+                    <label
+                      key={option.id}
+                      htmlFor={option.id}
+                      className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-all duration-200 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:shadow-md"
+                    >
+                      <Checkbox
+                        id={option.id}
+                        checked={isChecked}
+                        onCheckedChange={(checked) => handleMultipleVoteChange(option.id, checked as boolean)}
+                        disabled={!poll.is_active || isSubmitting || isLoadingVotes}
+                      />
+                      <span className="text-base font-medium flex-grow">{option.text}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
 
             <Button 
               onClick={handleSubmitVote} 
