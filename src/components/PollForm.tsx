@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Plus, Trash2, CalendarIcon } from 'lucide-react';
-import { PollOption } from '@/types/poll';
+import { PollOption, Poll } from '@/types/poll';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -57,25 +57,29 @@ const formSchema = z.object({
 export type PollFormValues = z.infer<typeof formSchema>;
 
 interface PollFormProps {
+  poll?: Poll; // Optional poll data for editing
   onSubmit: (data: PollFormValues) => void;
   isSubmitting: boolean;
 }
 
-const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
+const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => {
+  
+  const defaultValues: PollFormValues = {
+    title: poll?.title || "",
+    description: poll?.description || "",
+    poll_type: poll?.poll_type || 'single',
+    options: poll?.options || [
+      { id: generateOptionId(), text: "" },
+      { id: generateOptionId(), text: "" },
+    ],
+    is_active: poll?.is_active ?? true,
+    starts_at: poll?.starts_at ? new Date(poll.starts_at) : null,
+    ends_at: poll?.ends_at ? new Date(poll.ends_at) : null,
+  };
+
   const form = useForm<PollFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      poll_type: 'single',
-      options: [
-        { id: generateOptionId(), text: "" },
-        { id: generateOptionId(), text: "" },
-      ],
-      is_active: true,
-      starts_at: null,
-      ends_at: null,
-    },
+    defaultValues,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -309,7 +313,7 @@ const PollForm: React.FC<PollFormProps> = ({ onSubmit, isSubmitting }) => {
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Creating Poll..." : "Create Poll"}
+          {isSubmitting ? (poll ? "Updating Poll..." : "Creating Poll...") : (poll ? "Save Changes" : "Create Poll")}
         </Button>
       </form>
     </Form>

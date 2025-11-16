@@ -11,6 +11,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
+import { useCurrentUserId } from '@/hooks/use-current-user-id';
+import { Pencil } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface PollDetailViewProps {
   poll: Poll;
@@ -18,6 +21,9 @@ interface PollDetailViewProps {
 
 const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const { user } = useSupabaseSession();
+  const currentUserId = useCurrentUserId();
+  const isPollOwner = currentUserId === poll.user_id;
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: existingVotes, isLoading: isLoadingVotes } = useUserVote(poll.id);
   
@@ -194,6 +200,16 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
             <Badge variant="secondary" className="capitalize">
               {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
             </Badge>
+            {isPollOwner && (
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => navigate(`/polls/${poll.id}/edit`)}
+                title="Edit Poll"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
         {poll.description && (
