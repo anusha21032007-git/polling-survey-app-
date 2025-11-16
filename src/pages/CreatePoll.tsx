@@ -32,8 +32,7 @@ const CreatePoll: React.FC = () => {
         return;
     }
 
-    const newPoll = {
-      user_id: user.id,
+    const payload = {
       title: title.trim(),
       description: description?.trim() || null,
       poll_type,
@@ -44,20 +43,31 @@ const CreatePoll: React.FC = () => {
       ends_at: ends_at ? ends_at.toISOString() : null,
     };
 
-    const { error } = await supabase
-      .from('polls')
-      .insert([newPoll]);
+    try {
+      // Call the Edge Function (API endpoint)
+      const response = await supabase.functions.invoke('create-poll', {
+        method: 'POST',
+        body: payload,
+      });
 
-    setIsSubmitting(false);
+      if (response.error) {
+        throw response.error;
+      }
 
-    if (error) {
-      console.error('Error creating poll:', error);
-      showError('Failed to create poll. Please try again.');
-    } else {
+      const responseData = response.data as { message: string, pollId: string };
+
       showSuccess('Poll created successfully!');
       // Invalidate the polls query so the list updates immediately
       queryClient.invalidateQueries({ queryKey: ['polls'] }); 
-      navigate('/'); 
+      
+      // Redirect to the new poll detail page
+      navigate(`/polls/${responseData.pollId}`); 
+
+    } catch (error) {
+      console.error('Error creating poll via API:', error);
+      showError('Failed to create poll. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

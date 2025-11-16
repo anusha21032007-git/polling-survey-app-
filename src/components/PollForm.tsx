@@ -24,7 +24,7 @@ const optionSchema = z.object({
 });
 
 const formSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters.").max(200, "Title must be 200 characters or less."),
+  title: z.string().min(5, "Poll Question must be at least 5 characters.").max(200, "Poll Question must be 200 characters or less."),
   description: z.string().max(1000, "Description must be 1000 characters or less.").optional().or(z.literal('')),
   poll_type: z.enum(['single', 'multiple']),
   options: z.array(optionSchema).min(2, "A poll must have at least two options."),
@@ -95,13 +95,13 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         
-        {/* Title */}
+        {/* Title / Poll Question */}
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Poll Question/Title</FormLabel>
+              <FormLabel>Poll Question</FormLabel>
               <FormControl>
                 <Input placeholder="e.g., What is your favorite color?" {...field} />
               </FormControl>
@@ -127,36 +127,25 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
           )}
         />
 
-        {/* Poll Type */}
+        {/* Poll Type (Allow Multiple Choice) */}
         <FormField
           control={form.control}
           name="poll_type"
           render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Poll Type</FormLabel>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">
+                  Allow Multiple Choice
+                </FormLabel>
+                <FormDescription>
+                  If enabled, voters can select more than one option.
+                </FormDescription>
+              </div>
               <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="single" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Single Choice (Voters can select only one option)
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="multiple" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Multiple Choice (Voters can select several options)
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
+                <Switch
+                  checked={field.value === 'multiple'}
+                  onCheckedChange={(checked) => field.onChange(checked ? 'multiple' : 'single')}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -165,7 +154,7 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
 
         {/* Options */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Options</h3>
+          <h3 className="text-lg font-semibold">Poll Options</h3>
           {fields.map((item, index) => (
             <div key={item.id} className="flex items-center space-x-2">
               <FormField
@@ -203,9 +192,9 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting }) => 
           )}
         </div>
         
-        {/* Scheduling and Active Status */}
+        {/* Scheduling and Active Status (Keeping these for completeness) */}
         <div className="space-y-4 pt-4 border-t">
-          <h3 className="text-lg font-semibold">Settings & Scheduling</h3>
+          <h3 className="text-lg font-semibold">Scheduling & Status</h3>
           
           {/* Is Active Switch */}
           <FormField
