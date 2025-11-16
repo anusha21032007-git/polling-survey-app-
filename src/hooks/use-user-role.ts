@@ -6,8 +6,7 @@ export type UserRole = 'user' | 'admin';
 
 interface Profile {
   id: string;
-  first_name: string | null;
-  last_name: string | null;
+  full_name: string | null;
   avatar_url: string | null;
   role: UserRole;
 }
@@ -15,7 +14,7 @@ interface Profile {
 const fetchUserProfile = async (userId: string): Promise<Profile | null> => {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, first_name, last_name, avatar_url, role')
+    .select('id, full_name, avatar_url, role')
     .eq('id', userId)
     .single();
 
