@@ -1,4 +1,3 @@
-import { MadeWithDyad } from "@/components/made-with-dyad";
 import { useSupabaseSession } from "@/integrations/supabase/session-context";
 import PollList from "@/components/PollList";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -27,8 +26,6 @@ const Index = () => {
         <h3 className="text-xl font-semibold mb-4">Available Polls</h3>
         <PollList />
       </div>
-
-      <MadeWithDyad />
     </div>
   );
 };
