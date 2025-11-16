@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut } from 'lucide-react';
+import { LogOut, Plus, BarChart3 } from 'lucide-react';
 import { useSupabaseSession } from '@/integrations/supabase/session-context';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { showError } from '@/utils/toast';
 
 interface LayoutProps {
@@ -29,6 +29,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header className="sticky top-0 z-40 w-full border-b bg-card">
         <div className="container flex h-16 items-center justify-between py-4">
           <h1 className="text-xl font-bold">Polling App</h1>
+          
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center space-x-4 mx-auto">
+            <Link to="/">
+              <Button variant="ghost">Home</Button>
+            </Link>
+            <Link to="/create-poll">
+              <Button variant="ghost">
+                <Plus className="h-4 w-4 mr-2" /> Create Poll
+              </Button>
+            </Link>
+            <Link to="/poll-results">
+              <Button variant="ghost">
+                <BarChart3 className="h-4 w-4 mr-2" /> Results
+              </Button>
+            </Link>
+          </nav>
+
           <div className="flex items-center space-x-4">
             {user && (
               <span className="text-sm text-muted-foreground hidden sm:inline">
