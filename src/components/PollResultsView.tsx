@@ -3,7 +3,7 @@ import { Poll } from '@/types/poll';
 import { usePollResults } from '@/hooks/use-poll-results';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
@@ -33,7 +33,8 @@ const processResults = (poll: Poll, results: { option_id: string; count: number 
   return { processedData, totalVotes };
 };
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
+// A more professional and modern color palette
+const COLORS = ['#2563eb', '#4f46e5', '#db2777', '#ea580c', '#16a34a', '#6d28d9'];
 
 const PollResultsView: React.FC<PollResultsViewProps> = ({ poll }) => {
   const { data: results, isLoading, isError, error } = usePollResults(poll.id);
@@ -73,29 +74,40 @@ const PollResultsView: React.FC<PollResultsViewProps> = ({ poll }) => {
                 <BarChart
                   data={processedData}
                   layout="vertical"
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 5, right: 50, left: 20, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis type="number" stroke="hsl(var(--foreground))" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+                  <XAxis type="number" stroke="hsl(var(--foreground))" allowDecimals={false} />
                   <YAxis 
                     dataKey="name" 
                     type="category" 
                     stroke="hsl(var(--foreground))" 
-                    width={100} 
-                    tick={{ fontSize: 12 }}
+                    width={120} 
+                    tick={{ fontSize: 14 }}
+                    axisLine={false}
+                    tickLine={false}
                   />
                   <Tooltip 
+                    cursor={{ fill: 'hsl(var(--muted))' }}
                     contentStyle={{ 
-                      backgroundColor: 'hsl(var(--card))', 
+                      backgroundColor: 'hsl(var(--background))', 
                       border: '1px solid hsl(var(--border))',
                       borderRadius: 'var(--radius)',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
                     }}
                     formatter={(value, name, props) => [`${value} votes (${props.payload.percentage}%)`, 'Votes']}
                   />
-                  <Bar dataKey="votes" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="votes" radius={[0, 8, 8, 0]}>
                     {processedData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
+                    <LabelList 
+                      dataKey="votes" 
+                      position="right" 
+                      offset={10}
+                      style={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} 
+                      formatter={(value: number) => `${value}`}
+                    />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
