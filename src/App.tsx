@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import { SupabaseSessionProvider } from "./integrations/supabase/session-context";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
+import CreatePoll from "./pages/CreatePoll";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route element={<ProtectedRoute />}>
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
+                <Route path="/create-poll" element={<CreatePoll />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               </Route>
             </Route>
