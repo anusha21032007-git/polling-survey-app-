@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { User as UserIcon } from 'lucide-react';
 import { useSupabaseSession } from '@/integrations/supabase/session-context';
-import { useNavigate, Outlet } from 'react-router-dom';
-import { showError } from '@/utils/toast';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import ProfileDialog from './ProfileDialog';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import ProfilePopoverContent from './ProfilePopoverContent';
 
 interface LayoutProps {
   profileOpenByDefault?: boolean;
@@ -22,18 +17,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
   const { user } = useSupabaseSession();
-  const navigate = useNavigate();
-  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(profileOpenByDefault);
-
-  const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Sign out error:', error);
-      showError('Failed to sign out.');
-    } else {
-      navigate('/login');
-    }
-  };
+  const [isProfileOpen, setIsProfileOpen] = useState(profileOpenByDefault);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -48,25 +32,16 @@ const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
                 {user.email}
               </span>
             )}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            <Popover open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+              <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" title="User Menu">
                   <UserIcon className="h-5 w-5" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => setIsProfileDialogOpen(true)}>
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign Out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-96 p-0">
+                <ProfilePopoverContent onClose={() => setIsProfileOpen(false)} />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </header>
@@ -76,7 +51,6 @@ const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
           <Outlet />
         </main>
       </div>
-      <ProfileDialog isOpen={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen} />
     </div>
   );
 };
