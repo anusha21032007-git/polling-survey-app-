@@ -9,6 +9,10 @@ interface PollCardProps {
 }
 
 const PollCard: React.FC<PollCardProps> = ({ poll }) => {
+  
+  const isExpired = poll.due_at && new Date(poll.due_at) < new Date();
+  const isActive = poll.is_active && !isExpired;
+
   return (
     <Link to={`/polls/${poll.id}`} className="block group">
       <Card className="hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02] cursor-pointer h-full flex flex-col">
@@ -28,8 +32,8 @@ const PollCard: React.FC<PollCardProps> = ({ poll }) => {
             {poll.options.length} options available.
           </p>
           <div className="mt-4">
-            <Badge variant={poll.is_active ? "default" : "destructive"}>
-              {poll.is_active ? "Active" : "Closed"}
+            <Badge variant={isActive ? "default" : "destructive"}>
+              {isActive ? "Active" : "Closed"}
             </Badge>
           </div>
         </CardContent>
