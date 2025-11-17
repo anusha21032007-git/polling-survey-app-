@@ -4,20 +4,20 @@
 
 @layer base {
   :root {
-    --background: 266 90% 5%;
-    --foreground: 270 10% 90%;
+    --background: 266 90% 5%; /* Deep, dark purple */
+    --foreground: 270 10% 90%; /* Light grey/off-white */
 
-    --card: 266 80% 10%;
+    --card: 266 80% 10%; /* Slightly lighter purple for cards */
     --card-foreground: 270 10% 90%;
 
     --popover: 266 80% 8%;
     --popover-foreground: 270 10% 90%;
 
     --primary: 300 100% 50%; /* Neon Pink/Magenta */
-    --primary-foreground: 0 0% 0%;
+    --primary-foreground: 0 0% 0%; /* Black text on primary */
 
     --secondary: 180 100% 50%; /* Neon Cyan */
-    --secondary-foreground: 0 0% 0%;
+    --secondary-foreground: 0 0% 0%; /* Black text on secondary */
 
     --muted: 266 50% 20%;
     --muted-foreground: 270 10% 60%;
@@ -28,12 +28,13 @@
     --destructive: 0 100% 50%; /* Bright Red */
     --destructive-foreground: 0 0% 0%;
 
-    --border: 300 100% 30%;
+    --border: 300 100% 30%; /* Darker pink for borders */
     --input: 266 50% 15%;
-    --ring: 180 100% 50%;
+    --ring: 180 100% 50%; /* Cyan for focus rings */
 
-    --radius: 0rem;
+    --radius: 0rem; /* Sharp corners */
 
+    /* Sidebar variables for consistency */
     --sidebar-background: 266 90% 5%;
     --sidebar-foreground: 270 10% 90%;
     --sidebar-primary: 300 100% 50%;
@@ -48,28 +49,20 @@
     /* Cyberpunk is a dark theme by default, so this is identical */
     --background: 266 90% 5%;
     --foreground: 270 10% 90%;
-
     --card: 266 80% 10%;
     --card-foreground: 270 10% 90%;
-
     --popover: 266 80% 8%;
     --popover-foreground: 270 10% 90%;
-
     --primary: 300 100% 50%;
     --primary-foreground: 0 0% 0%;
-
     --secondary: 180 100% 50%;
     --secondary-foreground: 0 0% 0%;
-
     --muted: 266 50% 20%;
     --muted-foreground: 270 10% 60%;
-
     --accent: 60 100% 50%;
     --accent-foreground: 0 0% 0%;
-
     --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 0%;
-
     --border: 300 100% 30%;
     --input: 266 50% 15%;
     --ring: 180 100% 50%;
@@ -92,6 +85,7 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    /* Add a subtle grid background */
     background-image: 
       linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
       linear-gradient(to right, hsl(var(--primary) / 0.1) 1px, hsl(var(--background)) 1px);
@@ -103,6 +97,7 @@
   }
 }
 
+/* Add animations and transitions */
 @layer components {
   .glitch {
     position: relative;
