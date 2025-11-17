@@ -9,22 +9,22 @@ import { Skeleton } from '@/components/ui/skeleton';
 const SidebarNav = () => {
   const location = useLocation();
   const pathname = location.pathname;
-  const { isAdmin, isLoading: isRoleLoading } = useUserRole();
+  const { isLoading: isRoleLoading } = useUserRole();
 
   if (isRoleLoading) {
     return (
       <div className="space-y-2 p-2">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-10 w-full" />
+        ))}
       </div>
     );
   }
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
-    // Only show 'Create Poll' if the user is NOT an admin
-    ...(!isAdmin ? [{ href: '/create-poll', label: 'Create Poll', icon: PlusSquare }] : []),
+    // All users can create polls
+    { href: '/create-poll', label: 'Create Poll', icon: PlusSquare },
     { href: '/poll-results', label: 'Results', icon: BarChart3 },
   ];
 

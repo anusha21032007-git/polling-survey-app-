@@ -14,7 +14,7 @@ import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
 import { Pencil, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useUserRole } from '@/hooks/use-user-role'; // Import useUserRole
+import { useUserRole } from '@/hooks/use-user-role';
 
 interface PollDetailViewProps {
   poll: Poll;
@@ -22,7 +22,7 @@ interface PollDetailViewProps {
 
 const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const { user } = useSupabaseSession();
-  const { isAdmin, isLoading: isRoleLoading } = useUserRole(); // Get admin status
+  const { isLoading: isRoleLoading } = useUserRole();
   const currentUserId = useCurrentUserId();
   const isPollOwner = currentUserId === poll.user_id;
   const navigate = useNavigate();
@@ -71,10 +71,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const handleSubmitVote = async () => {
     if (!user) {
       showError("You must be logged in to vote.");
-      return;
-    }
-    if (isAdmin) {
-      showError("Admins cannot cast votes.");
       return;
     }
 
@@ -156,15 +152,11 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
         <div className="flex justify-between items-start">
           <CardTitle className="text-3xl">{poll.title}</CardTitle>
           <div className="flex space-x-2">
-            {/* Only render status and type badges if NOT admin */}
-            {!isAdmin && (
-              <>
-                {renderStatusBadge()}
-                <Badge variant="secondary" className="capitalize">
-                  {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
-                </Badge>
-              </>
-            )}
+            {/* Status and type badges are always shown */}
+            {renderStatusBadge()}
+            <Badge variant="secondary" className="capitalize">
+              {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
+            </Badge>
             
             {/* Results Button */}
             <Button 
@@ -200,14 +192,8 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {isRoleLoading ? (
-          <div className="text-center text-muted-foreground">Loading user role...</div>
-        ) : isAdmin ? (
-          <div className="p-4 bg-blue-100 text-blue-800 rounded-md dark:bg-blue-900 dark:text-blue-200">
-            As an administrator, you are viewing this poll for management purposes. Voting is disabled for admin accounts.
-          </div>
-        ) : isLoadingVotes ? (
-          <div className="text-center text-muted-foreground">Checking vote status...</div>
+        {isRoleLoading || isLoadingVotes ? (
+          <div className="text-center text-muted-foreground">Loading poll status...</div>
         ) : !isPollActive ? (
           <div className="p-4 bg-red-100 text-red-800 rounded-md dark:bg-red-900 dark:text-red-200">
             This poll is closed and cannot accept new votes.
