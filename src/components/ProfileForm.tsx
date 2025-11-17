@@ -57,15 +57,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         
         {/* 1. Avatar Section (Centered) */}
-        <div className="flex justify-center pb-4">
+        <div className="flex justify-center">
           <FormField
             control={form.control}
             name="avatar_url"
             render={({ field }) => (
-              <FormItem className="space-y-4">
+              <FormItem>
                 <FormControl>
                   <AvatarUpload url={field.value || null} onUpload={handleAvatarUpload} size={100} />
                 </FormControl>
@@ -78,7 +78,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
         <Separator />
 
         {/* 2. Personal Information Section */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <h3 className="flex items-center text-lg font-semibold text-primary">
             <User className="mr-2 h-5 w-5" />
             Personal Information
@@ -120,7 +120,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
         <Separator />
 
         {/* 3. Bio Section */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <h3 className="flex items-center text-lg font-semibold text-primary">
             <AlignLeft className="mr-2 h-5 w-5" />
             Bio
@@ -137,7 +137,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
         <Separator />
 
         {/* 4. Settings Section */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <h3 className="flex items-center text-lg font-semibold text-primary">
             <Mail className="mr-2 h-5 w-5" />
             Preferences
