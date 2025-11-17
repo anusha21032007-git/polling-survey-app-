@@ -6,6 +6,8 @@ import ProfileForm, { ProfileFormValues } from '@/components/ProfileForm';
 import { showSuccess, showError } from '@/utils/toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Profile: React.FC = () => {
   const { user } = useSupabaseSession();
@@ -52,9 +54,14 @@ const Profile: React.FC = () => {
     <div className="max-w-2xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">My Profile</CardTitle>
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate(-1)} aria-label="Go back">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <CardTitle className="text-2xl">Edit Profile</CardTitle>
+          </div>
           {!profile.full_name && (
-             <CardDescription className="text-destructive">
+             <CardDescription className="text-destructive ml-12">
                Please complete your profile before continuing.
              </CardDescription>
           )}

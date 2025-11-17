@@ -4,7 +4,7 @@ import { useSupabaseSession } from '@/integrations/supabase/session-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { User, Upload } from 'lucide-react';
+import { User, Camera } from 'lucide-react';
 import { showError } from '@/utils/toast';
 
 interface AvatarUploadProps {
@@ -60,28 +60,39 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ url, onUpload, size = 128 }
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      <Avatar style={{ height: size, width: size }} className="ring-2 ring-primary/20">
-        <AvatarImage src={avatarUrl || undefined} alt="User avatar" />
-        <AvatarFallback style={{ height: size, width: size, fontSize: size / 2 }}>
-          <User />
-        </AvatarFallback>
-      </Avatar>
-      <div>
-        <Button asChild variant="outline">
-          <label htmlFor="avatar-upload" className="cursor-pointer">
-            <Upload className="mr-2 h-4 w-4" />
-            {uploading ? 'Uploading...' : 'Upload Image'}
+      <div className="relative">
+        <Avatar style={{ height: size, width: size }} className="ring-2 ring-primary/20">
+          <AvatarImage src={avatarUrl || undefined} alt="User avatar" />
+          <AvatarFallback style={{ height: size, width: size, fontSize: size / 2 }}>
+            <User />
+          </AvatarFallback>
+        </Avatar>
+        <Button 
+          asChild 
+          variant="secondary" 
+          size="icon" 
+          className="absolute bottom-0 right-0 h-8 w-8 rounded-full"
+        >
+          <label htmlFor="avatar-upload" className="cursor-pointer flex items-center justify-center">
+            <Camera className="h-4 w-4" />
           </label>
         </Button>
-        <Input
-          id="avatar-upload"
-          type="file"
-          className="hidden"
-          accept="image/png, image/jpeg"
-          onChange={handleUpload}
-          disabled={uploading}
-        />
       </div>
+      
+      <Button asChild variant="secondary" className="text-primary">
+        <label htmlFor="avatar-upload" className="cursor-pointer">
+          {uploading ? 'Uploading...' : 'Change Photo'}
+        </label>
+      </Button>
+      
+      <Input
+        id="avatar-upload"
+        type="file"
+        className="hidden"
+        accept="image/png, image/jpeg"
+        onChange={handleUpload}
+        disabled={uploading}
+      />
     </div>
   );
 };
