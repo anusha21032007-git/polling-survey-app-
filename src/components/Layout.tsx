@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { LogOut, User as UserIcon } from 'lucide-react';
@@ -14,10 +14,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import ProfileDialog from './ProfileDialog';
 
-const Layout: React.FC = () => {
+interface LayoutProps {
+  profileOpenByDefault?: boolean;
+}
+
+const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
   const { user } = useSupabaseSession();
   const navigate = useNavigate();
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(profileOpenByDefault);
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -51,7 +57,7 @@ const Layout: React.FC = () => {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => navigate('/profile')}>
+                <DropdownMenuItem onSelect={() => setIsProfileDialogOpen(true)}>
                   Profile
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -70,6 +76,7 @@ const Layout: React.FC = () => {
           <Outlet />
         </main>
       </div>
+      <ProfileDialog isOpen={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen} />
     </div>
   );
 };

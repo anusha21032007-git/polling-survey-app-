@@ -2,7 +2,6 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,10 +33,10 @@ interface ProfileFormProps {
   email: string;
   onSubmit: (data: ProfileFormValues) => void;
   isSubmitting: boolean;
+  onCancel: () => void;
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isSubmitting }) => {
-  const navigate = useNavigate();
+const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isSubmitting, onCancel }) => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -59,7 +58,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         
-        {/* 1. Avatar Section (Centered) */}
         <div className="flex justify-center">
           <FormField
             control={form.control}
@@ -77,7 +75,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
         
         <Separator />
 
-        {/* 2. Personal Information Section */}
         <div className="space-y-4">
           <h3 className="flex items-center text-lg font-semibold text-primary">
             <User className="mr-2 h-5 w-5" />
@@ -119,7 +116,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
 
         <Separator />
 
-        {/* 3. Bio Section */}
         <div className="space-y-4">
           <h3 className="flex items-center text-lg font-semibold text-primary">
             <AlignLeft className="mr-2 h-5 w-5" />
@@ -136,7 +132,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
 
         <Separator />
 
-        {/* 4. Settings Section */}
         <div className="space-y-4">
           <h3 className="flex items-center text-lg font-semibold text-primary">
             <Mail className="mr-2 h-5 w-5" />
@@ -153,9 +148,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
           )} />
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-end space-x-4 pt-4 border-t">
-          <Button type="button" variant="outline" onClick={() => navigate('/')} disabled={isSubmitting}>
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>

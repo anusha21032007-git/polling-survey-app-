@@ -13,7 +13,6 @@ import CreatePoll from "./pages/CreatePoll";
 import PollResults from "./pages/PollResults";
 import PollDetail from "./pages/PollDetail";
 import EditPoll from "./pages/EditPoll";
-import Profile from "./pages/Profile"; // Import the new Profile page
 
 const queryClient = new QueryClient();
 
@@ -29,15 +28,14 @@ const App = () => (
             
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Layout profileOpenByDefault />} />
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
-                <Route path="/profile" element={<Profile />} /> {/* Add Profile Route */}
                 <Route path="/create-poll" element={<CreatePoll />} />
                 <Route path="/poll-results" element={<PollResults />} />
                 <Route path="/polls/:id" element={<PollDetail />} />
                 <Route path="/polls/:id/edit" element={<EditPoll />} />
                 <Route path="/polls/:id/results" element={<PollResults />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               </Route>
             </Route>
 
