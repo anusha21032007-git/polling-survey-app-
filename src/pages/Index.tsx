@@ -16,7 +16,7 @@ const Index = () => {
     <div className="space-y-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">
-          Welcome back, {userName.split('@')[0]}! 
+          Welcome, {userName.split('@')[0]}! 
           {role === 'admin' && <span className="text-sm text-muted-foreground ml-2">(Admin)</span>}
         </h1>
       </div>
