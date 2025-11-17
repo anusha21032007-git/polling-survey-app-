@@ -45,7 +45,7 @@ const ProfileDialog: React.FC<ProfileDialogProps> = ({ isOpen, onOpenChange }) =
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl">Edit Profile</DialogTitle>
           {!isLoading && profile && !profile.full_name && (
