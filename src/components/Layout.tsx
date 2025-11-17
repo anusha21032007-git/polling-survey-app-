@@ -23,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
     <div className="min-h-screen flex flex-col bg-background">
       <header className="sticky top-0 z-40 w-full border-b bg-card/80 backdrop-blur-sm">
         <div className="container flex h-16 items-center justify-between py-4">
-          <h1 className="text-xl font-bold animate-glow">
+          <h1 className="text-xl font-bold">
             <a href="/">Polling App</a>
           </h1>
           <div className="flex items-center space-x-4">

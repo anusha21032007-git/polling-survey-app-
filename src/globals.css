@@ -93,25 +93,11 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-sans;
   }
 }
 
 /* Add animations and transitions */
 @layer components {
-  .glitch {
-    position: relative;
-    text-shadow: 0.05em 0 0 hsl(var(--secondary) / 0.75), -0.025em -0.05em 0 hsl(var(--primary) / 0.75), 0.025em 0.05em 0 hsl(var(--accent) / 0.75);
-    animation: glitch 500ms infinite;
-  }
-
-  @keyframes glitch {
-    0% { text-shadow: 0.05em 0 0 hsl(var(--secondary) / 0.75), -0.05em -0.025em 0 hsl(var(--primary) / 0.75), -0.025em 0.05em 0 hsl(var(--accent) / 0.75); }
-    14% { text-shadow: 0.05em 0 0 hsl(var(--secondary) / 0.75), -0.05em -0.025em 0 hsl(var(--primary) / 0.75), -0.025em 0.05em 0 hsl(var(--accent) / 0.75); }
-    15% { text-shadow: -0.05em -0.025em 0 hsl(var(--secondary) / 0.75), 0.025em 0.025em 0 hsl(var(--primary) / 0.75), -0.05em -0.05em 0 hsl(var(--accent) / 0.75); }
-    49% { text-shadow: -0.05em -0.025em 0 hsl(var(--secondary) / 0.75), 0.025em 0.025em 0 hsl(var(--primary) / 0.75), -0.05em -0.05em 0 hsl(var(--accent) / 0.75); }
-    50% { text-shadow: 0.025em 0.05em 0 hsl(var(--secondary) / 0.75), 0.05em 0 0 hsl(var(--primary) / 0.75), 0 -0.05em 0 hsl(var(--accent) / 0.75); }
-    99% { text-shadow: 0.025em 0.05em 0 hsl(var(--secondary) / 0.75), 0.05em 0 0 hsl(var(--primary) / 0.75), 0 -0.05em 0 hsl(var(--accent) / 0.75); }
-    100% { text-shadow: -0.025em 0 0 hsl(var(--secondary) / 0.75), -0.025em -0.025em 0 hsl(var(--primary) / 0.75), -0.025em -0.05em 0 hsl(var(--accent) / 0.75); }
-  }
+  /* Removed .glitch class and @keyframes glitch for professionalism */
 }
