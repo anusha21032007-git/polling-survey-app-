@@ -34,7 +34,7 @@ const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
             )}
             <Popover open={isProfileOpen} onOpenChange={setIsProfileOpen}>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" title="User Menu" className="hover:text-primary hover:shadow-glow-primary transition-all">
+                <Button variant="ghost" size="icon" title="User Menu" className="hover:text-primary transition-all">
                   <UserIcon className="h-5 w-5" />
                 </Button>
               </PopoverTrigger>

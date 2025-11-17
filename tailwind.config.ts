@@ -85,20 +85,14 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
-        "glow": {
-          "0%, 100%": { textShadow: "0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary))" },
-          "50%": { textShadow: "0 0 20px hsl(var(--primary)), 0 0 30px hsl(var(--primary))" },
-        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out forwards",
-        "glow": "glow 2s ease-in-out infinite",
       },
       boxShadow: {
-        'glow-primary': '0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary))',
-        'glow-secondary': '0 0 5px hsl(var(--secondary)), 0 0 10px hsl(var(--secondary))',
+        // Removed glow shadows
       }
     },
   },
