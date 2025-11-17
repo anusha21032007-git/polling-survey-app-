@@ -32,11 +32,16 @@ const Login = () => {
                 colors: {
                   brand: 'hsl(var(--primary))',
                   brandAccent: 'hsl(var(--primary-foreground))',
+                  // Ensure input text is light (foreground color)
+                  inputBackground: 'hsl(var(--input))',
+                  inputBorder: 'hsl(var(--border))',
+                  inputFocus: 'hsl(var(--ring))',
+                  inputText: 'hsl(var(--foreground))', 
                 },
               },
             },
           }}
-          theme="light" // Using light theme for Auth UI, relying on Tailwind for overall dark mode
+          theme="dark" // Explicitly setting to dark theme for better integration with our cyberpunk style
           redirectTo={window.location.origin + '/'}
         />
       </div>

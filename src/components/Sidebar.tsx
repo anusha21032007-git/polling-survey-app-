@@ -38,7 +38,7 @@ const SidebarNav = () => {
               'w-full justify-start text-base p-6',
               pathname === item.href
                 ? 'bg-muted hover:bg-muted font-semibold'
-                : 'hover:bg-muted/50'
+                : 'hover:bg-muted/50 hover:text-foreground' // Explicitly keep text color light on hover
             )}
           >
             <item.icon className="mr-3 h-5 w-5" />
