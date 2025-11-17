@@ -26,28 +26,30 @@ const Profile: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-8 w-1/4" />
-          <Skeleton className="h-4 w-1/2" />
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <Skeleton className="h-24 w-24 rounded-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="max-w-2xl mx-auto">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-1/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <Skeleton className="h-24 w-24 rounded-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   if (isError || !profile || !user?.email) {
-    return <div className="text-destructive p-4">Error loading profile. Please try refreshing the page.</div>;
+    return <div className="max-w-2xl mx-auto text-destructive p-4">Error loading profile. Please try refreshing the page.</div>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">My Profile</CardTitle>
