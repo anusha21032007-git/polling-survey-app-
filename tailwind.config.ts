@@ -18,6 +18,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["'Share Tech Mono'", "sans-serif"],
+        heading: ["'Orbitron'", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -64,32 +68,38 @@ export default {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "0",
+        md: "0",
+        sm: "0",
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "glow": {
+          "0%, 100%": { textShadow: "0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary))" },
+          "50%": { textShadow: "0 0 20px hsl(var(--primary)), 0 0 30px hsl(var(--primary))" },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.5s ease-out forwards",
+        "glow": "glow 2s ease-in-out infinite",
       },
+      boxShadow: {
+        'glow-primary': '0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary))',
+        'glow-secondary': '0 0 5px hsl(var(--secondary)), 0 0 10px hsl(var(--secondary))',
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

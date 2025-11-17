@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { User as UserIcon } from 'lucide-react';
+import { User as UserIcon, Moon, Sun } from 'lucide-react';
 import { useSupabaseSession } from '@/integrations/supabase/session-context';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
@@ -10,6 +10,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import ProfilePopoverContent from './ProfilePopoverContent';
+import { useTheme } from 'next-themes';
+import { ThemeToggle } from './ThemeToggle';
 
 interface LayoutProps {
   profileOpenByDefault?: boolean;
@@ -27,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
             <a href="/">Polling App</a>
           </h1>
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             {user && (
               <span className="text-sm text-muted-foreground hidden sm:inline">
                 {user.email}
