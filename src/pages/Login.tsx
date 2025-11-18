@@ -17,9 +17,9 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold text-center text-gray-900">
           Sign in to Polling App
         </h2>
         <Auth
@@ -30,18 +30,18 @@ const Login = () => {
             variables: {
               default: {
                 colors: {
-                  brand: 'hsl(var(--primary))',
-                  brandAccent: 'hsl(var(--primary-foreground))',
-                  // Ensure input text is light (foreground color)
-                  inputBackground: 'hsl(var(--input))',
-                  inputBorder: 'hsl(var(--border))',
-                  inputFocus: 'hsl(var(--ring))',
-                  inputText: 'hsl(var(--foreground))', 
+                  // Using light theme colors
+                  brand: 'hsl(221 83% 53%)', // Primary Blue
+                  brandAccent: 'hsl(221 83% 53%)', // Primary Blue
+                  inputBackground: 'hsl(210 40% 96.1%)', // Secondary/Muted
+                  inputBorder: 'hsl(214.3 31.8% 91.4%)', // Border
+                  inputFocus: 'hsl(221 83% 53%)', // Primary Blue
+                  inputText: 'hsl(222.2 47.4% 11.2%)', // Foreground Dark
                 },
               },
             },
           }}
-          theme="dark" // Explicitly setting to dark theme for better integration with our cyberpunk style
+          theme="light"
           redirectTo={window.location.origin + '/'}
         />
       </div>

@@ -4,77 +4,84 @@
 
 @layer base {
   :root {
-    --background: 248 90% 5%; /* Deep, dark purple hue */
-    --foreground: 270 10% 90%; /* Light grey/off-white */
+    /* Base Colors (Light Theme) */
+    --background: 0 0% 100%; /* White */
+    --foreground: 222.2 47.4% 11.2%; /* Dark Blue/Black */
 
-    --card: 248 80% 10%; /* Slightly lighter purple for cards */
-    --card-foreground: 270 10% 90%;
+    /* Card/Popover/Surface */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
-    --popover: 248 80% 8%;
-    --popover-foreground: 270 10% 90%;
+    /* Primary (Attractive Blue) */
+    --primary: 221 83% 53%; 
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --primary: 333 100% 71%; /* Pink: #FF6BA7 */
-    --primary-foreground: 0 0% 0%; /* Black text on primary */
+    /* Secondary (Light Gray) */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 191 100% 50%; /* Cyan: #00C2FF */
-    --secondary-foreground: 0 0% 0%; /* Black text on secondary */
+    /* Muted (Subtle Gray) */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --muted: 248 50% 20%;
-    --muted-foreground: 270 10% 60%;
+    /* Accent (Soft Green for highlights) */
+    --accent: 142.1 76.2% 36.3%;
+    --accent-foreground: 0 0% 100%;
 
-    --accent: 60 100% 50%; /* Neon Yellow (kept) */
-    --accent-foreground: 0 0% 0%;
+    /* Destructive (Red) */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
 
-    --destructive: 0 100% 50%; /* Bright Red (kept) */
-    --destructive-foreground: 0 0% 0%;
+    /* Border/Input/Ring */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%; /* Primary color for focus ring */
 
-    --border: 248 100% 69%; /* Purple: #7B61FF */
-    --input: 248 50% 15%;
-    --ring: 191 100% 50%; /* Cyan */
+    --radius: 0.5rem;
 
-    --radius: 0rem; /* Sharp corners */
-
-    /* Sidebar variables for consistency */
-    --sidebar-background: 248 90% 5%;
-    --sidebar-foreground: 270 10% 90%;
-    --sidebar-primary: 333 100% 71%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 248 50% 20%;
-    --sidebar-accent-foreground: 191 100% 50%;
-    --sidebar-border: 248 50% 15%;
-    --sidebar-ring: 191 100% 50%;
+    /* Sidebar variables (matching main theme) */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 47.4% 11.2%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221 83% 53%;
   }
 
+  /* Keeping the dark block defined but setting default theme to light in main.tsx */
   .dark {
-    /* Cyberpunk is a dark theme by default, so this is identical */
-    --background: 248 90% 5%;
-    --foreground: 270 10% 90%;
-    --card: 248 80% 10%;
-    --card-foreground: 270 10% 90%;
-    --popover: 248 80% 8%;
-    --popover-foreground: 270 10% 90%;
-    --primary: 333 100% 71%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 191 100% 50%;
-    --secondary-foreground: 0 0% 0%;
-    --muted: 248 50% 20%;
-    --muted-foreground: 270 10% 60%;
-    --accent: 60 100% 50%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 0%;
-    --border: 248 100% 69%;
-    --input: 248 50% 15%;
-    --ring: 191 100% 50%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 142.1 76.2% 36.3%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
     
-    --sidebar-background: 248 90% 5%;
-    --sidebar-foreground: 270 10% 90%;
-    --sidebar-primary: 333 100% 71%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 248 50% 20%;
-    --sidebar-accent-foreground: 191 100% 50%;
-    --sidebar-border: 248 50% 15%;
-    --sidebar-ring: 191 100% 50%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 47.4% 11.2%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221 83% 53%;
   }
 }
 
@@ -85,11 +92,9 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    /* Update grid background to use the new primary color */
-    background-image: 
-      linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
-      linear-gradient(to right, hsl(var(--primary) / 0.1) 1px, hsl(var(--background)) 1px);
-    background-size: 2rem 2rem;
+    /* Remove grid background for clean light theme */
+    background-image: none;
+    background-size: auto;
   }
 
   h1, h2, h3, h4, h5, h6 {
