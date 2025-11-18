@@ -16,7 +16,7 @@ const PollCard: React.FC<PollCardProps> = ({ poll }) => {
   return (
     <Link to={`/polls/${poll.id}`} className="block group">
       <Card className="hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02] cursor-pointer h-full flex flex-col">
-        <CardHeader>
+        <CardHeader className="p-4 pb-2">
           <div className="flex justify-between items-start">
             <CardTitle className="text-xl">{poll.title}</CardTitle>
             <Badge variant="secondary" className="capitalize">
@@ -27,7 +27,7 @@ const PollCard: React.FC<PollCardProps> = ({ poll }) => {
             <CardDescription className="mt-1 line-clamp-2">{poll.description}</CardDescription>
           )}
         </CardHeader>
-        <CardContent className="mt-auto">
+        <CardContent className="mt-auto p-4 pt-0">
           <p className="text-sm text-muted-foreground mb-2">
             {poll.options.length} options available.
           </p>

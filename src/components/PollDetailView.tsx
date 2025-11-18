@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
-import { Pencil, BarChart3 } from 'lucide-react';
+import { Pencil, BarChart3, Share2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/use-user-role';
 
@@ -134,6 +134,15 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
     }
   };
 
+  const handleShare = () => {
+    const pollUrl = window.location.href;
+    navigator.clipboard.writeText(pollUrl).then(() => {
+      showSuccess('Poll link copied to clipboard!');
+    }).catch(() => {
+      showError('Failed to copy link.');
+    });
+  };
+
   const renderStatusBadge = () => {
     if (!poll.is_active) {
       return <Badge variant="destructive">Closed (Manually)</Badge>;
@@ -158,6 +167,16 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
               {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
             </Badge>
             
+            {/* Share Button */}
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={handleShare}
+              title="Share Poll"
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
+
             {/* Results Button */}
             <Button 
               variant="outline" 
