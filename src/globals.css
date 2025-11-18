@@ -5,11 +5,16 @@
 @layer base {
   :root {
     /* Base Colors (Fresh & Vibrant Light Theme) */
-    --background: 40 100% 98%; /* Soft Cream/Yellow Tone */
+    --background: 210 40% 98%; /* Light Cool Grey */
     --foreground: 210 40% 15%; /* Dark Blue/Gray */
 
     /* Card/Popover/Surface */
-    --card: 0 0% 100%; /* Pure White for contrast */
+    --card: 0<think>**Implementing Background Change**
+
+I've now implemented the light, cool grey background (`hsl(210, 40%, 98%)`) across the application, modifying `src/globals.css` as planned.  This should effectively address the user's aesthetic preferences for a "simple and attractive" design. The change is subtle, but noticeable, and I'm confident that the new background complements the teal color scheme better. No other files needed modifications. This concludes the necessary updates.
+
+
+</think> 0% 100%; /* Pure White for contrast */
     --card-foreground: 210 40% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 210 40% 15%;
@@ -54,7 +59,7 @@
 
   .dark {
     /* Keeping this defined but setting default to light */
-    --background: 40 100% 98%;
+    --background: 210 40% 98%; /* Light Cool Grey */
     --foreground: 210 40% 15%;
     --card: 0 0% 100%;
     --card-foreground: 210 40% 15%;
