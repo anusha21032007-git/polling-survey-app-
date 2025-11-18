@@ -17,9 +17,9 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md p-8 space-y-6 bg-card shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold text-center text-foreground">
           Sign in to Polling App
         </h2>
         <Auth
@@ -30,13 +30,12 @@ const Login = () => {
             variables: {
               default: {
                 colors: {
-                  // Using light theme colors
-                  brand: 'hsl(221 83% 53%)', // Primary Blue
-                  brandAccent: 'hsl(221 83% 53%)', // Primary Blue
-                  inputBackground: 'hsl(210 40% 96.1%)', // Secondary/Muted
-                  inputBorder: 'hsl(214.3 31.8% 91.4%)', // Border
-                  inputFocus: 'hsl(221 83% 53%)', // Primary Blue
-                  inputText: 'hsl(222.2 47.4% 11.2%)', // Foreground Dark
+                  brand: 'hsl(0 100% 71%)', // Vibrant Coral
+                  brandAccent: 'hsl(0 100% 71%)',
+                  inputBackground: 'hsl(36 27% 91%)', // Light Beige
+                  inputBorder: 'hsl(36 27% 85%)',
+                  inputFocus: 'hsl(0 100% 71%)',
+                  inputText: 'hsl(0 0% 20%)', // Dark Charcoal
                 },
               },
             },

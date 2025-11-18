@@ -4,30 +4,30 @@
 
 @layer base {
   :root {
-    /* Base Colors (Light Theme) */
-    --background: 0 0% 100%; /* White */
-    --foreground: 222.2 47.4% 11.2%; /* Dark Blue/Black */
+    /* Base Colors (Vibrant Light Theme) */
+    --background: 33 100% 97%; /* Warm Off-White */
+    --foreground: 0 0% 20%; /* Dark Charcoal */
 
     /* Card/Popover/Surface */
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%; /* White for contrast */
+    --card-foreground: 0 0% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 0 0% 20%;
 
-    /* Primary (Attractive Blue) */
-    --primary: 221 83% 53%; 
+    /* Primary (Vibrant Coral) */
+    --primary: 0 100% 71%; 
     --primary-foreground: 0 0% 100%; /* White */
 
-    /* Secondary (Light Gray) */
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary (Light Beige) */
+    --secondary: 36 27% 91%;
+    --secondary-foreground: 0 0% 20%;
 
-    /* Muted (Subtle Gray) */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted (Subtle Beige) */
+    --muted: 36 27% 91%;
+    --muted-foreground: 0 0% 40%;
 
-    /* Accent (Soft Green for highlights) */
-    --accent: 142.1 76.2% 36.3%;
+    /* Accent (Vibrant Teal) */
+    --accent: 175 58% 58%;
     --accent-foreground: 0 0% 100%;
 
     /* Destructive (Red) */
@@ -35,53 +35,53 @@
     --destructive-foreground: 0 0% 100%;
 
     /* Border/Input/Ring */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%; /* Primary color for focus ring */
+    --border: 36 27% 85%;
+    --input: 36 27% 85%;
+    --ring: 0 100% 71%; /* Primary color for focus ring */
 
     --radius: 0.5rem;
 
     /* Sidebar variables (matching main theme) */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 47.4% 11.2%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 0 100% 71%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
-    --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-accent: 36 27% 91%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 36 27% 85%;
+    --sidebar-ring: 0 100% 71%;
   }
 
-  /* Keeping the dark block defined but setting default theme to light in main.tsx */
   .dark {
-    --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
+    /* Keeping this defined but setting default to light */
+    --background: 33 100% 97%;
+    --foreground: 0 0% 20%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card-foreground: 0 0% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
-    --primary: 221 83% 53%;
+    --popover-foreground: 0 0% 20%;
+    --primary: 0 100% 71%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 142.1 76.2% 36.3%;
+    --secondary: 36 27% 91%;
+    --secondary-foreground: 0 0% 20%;
+    --muted: 36 27% 91%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 175 58% 58%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
+    --border: 36 27% 85%;
+    --input: 36 27% 85%;
+    --ring: 0 100% 71%;
     
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 47.4% 11.2%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 0 100% 71%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
-    --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-accent: 36 27% 91%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 36 27% 85%;
+    --sidebar-ring: 0 100% 71%;
   }
 }
 
@@ -92,7 +92,6 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    /* Remove grid background for clean light theme */
     background-image: none;
     background-size: auto;
   }
@@ -100,9 +99,4 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-sans;
   }
-}
-
-/* Add animations and transitions */
-@layer components {
-  /* Removed .glitch class and @keyframes glitch for professionalism */
 }
