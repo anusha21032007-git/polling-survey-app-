@@ -34,9 +34,10 @@ interface ProfileFormProps {
   onSubmit: (data: ProfileFormValues) => void;
   isSubmitting: boolean;
   onCancel: () => void;
+  hideCancel?: boolean; // New prop
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isSubmitting }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isSubmitting, onCancel, hideCancel = false }) => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -149,7 +150,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, email, onSubmit, isS
         </div>
 
         <div className="flex justify-end space-x-4 pt-4">
-          <Button type="submit" disabled={isSubmitting} className="w-full">
+          {!hideCancel && (
+            <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
+              Cancel
+            </Button>
+          )}
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>

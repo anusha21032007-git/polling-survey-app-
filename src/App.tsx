@@ -13,6 +13,7 @@ import CreatePoll from "./pages/CreatePoll";
 import PollResults from "./pages/PollResults";
 import PollDetail from "./pages/PollDetail";
 import EditPoll from "./pages/EditPoll";
+import SetupProfile from "./pages/SetupProfile"; // New import
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,9 @@ const App = () => (
             
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/profile" element={<Layout profileOpenByDefault />} />
+              {/* Mandatory Onboarding Route (no layout wrapper) */}
+              <Route path="/setup-profile" element={<SetupProfile />} /> 
+              
               <Route element={<Layout />}>
                 <Route path="/" element={<Index />} />
                 <Route path="/create-poll" element={<CreatePoll />} />

@@ -40,10 +40,17 @@ const ProtectedRoute: React.FC<{ children?: React.ReactNode }> = ({ children }) 
     return <Navigate to="/login" replace />;
   }
 
-  // Redirect to profile page if full_name is not set and the user is not already on the profile page
   const isProfileIncomplete = profile && !profile.full_name;
-  if (isProfileIncomplete && location.pathname !== '/profile') {
-    return <Navigate to="/profile" replace />;
+  const isSetupRoute = location.pathname === '/setup-profile';
+
+  // 1. If profile is incomplete, force redirect to setup page, unless already there.
+  if (isProfileIncomplete && !isSetupRoute) {
+    return <Navigate to="/setup-profile" replace />;
+  }
+  
+  // 2. If profile is complete, but user is stuck on the setup page, redirect to home.
+  if (!isProfileIncomplete && isSetupRoute) {
+    return <Navigate to="/" replace />;
   }
 
   return children ? <>{children}</> : <Outlet />;

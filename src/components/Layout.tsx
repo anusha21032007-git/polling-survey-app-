@@ -13,13 +13,9 @@ import ProfilePopoverContent from './ProfilePopoverContent';
 import MobileFooterNav from './MobileFooterNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-interface LayoutProps {
-  profileOpenByDefault?: boolean;
-}
-
-const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
+const Layout: React.FC = () => {
   const { user } = useSupabaseSession();
-  const [isProfileOpen, setIsProfileOpen] = useState(profileOpenByDefault);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const isMobile = useIsMobile();
 
   return (
