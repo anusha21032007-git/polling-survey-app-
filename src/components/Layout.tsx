@@ -10,6 +10,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import ProfilePopoverContent from './ProfilePopoverContent';
+import MobileFooterNav from './MobileFooterNav';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LayoutProps {
   profileOpenByDefault?: boolean;
@@ -18,6 +20,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
   const { user } = useSupabaseSession();
   const [isProfileOpen, setIsProfileOpen] = useState(profileOpenByDefault);
+  const isMobile = useIsMobile();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -47,10 +50,11 @@ const Layout: React.FC<LayoutProps> = ({ profileOpenByDefault = false }) => {
       </header>
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-grow p-8 overflow-auto animate-fade-in">
+        <main className="flex-grow p-4 md:p-8 overflow-auto animate-fade-in pb-20 md:pb-8">
           <Outlet />
         </main>
       </div>
+      {isMobile && <MobileFooterNav />}
     </div>
   );
 };

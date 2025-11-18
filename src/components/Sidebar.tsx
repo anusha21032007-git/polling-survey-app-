@@ -38,7 +38,7 @@ const SidebarNav = () => {
               'w-full justify-start text-base p-6',
               pathname === item.href
                 ? 'bg-muted hover:bg-muted font-semibold'
-                : 'hover:bg-muted/50 hover:text-foreground' // Explicitly keep text color light on hover
+                : 'hover:bg-muted/50 hover:text-foreground'
             )}
           >
             <item.icon className="mr-3 h-5 w-5" />
@@ -52,7 +52,7 @@ const SidebarNav = () => {
 
 const Sidebar = () => {
   return (
-    <aside className="w-64 flex-shrink-0 border-r bg-background">
+    <aside className="hidden md:block w-64 flex-shrink-0 border-r bg-background">
        <div className="p-4">
          <SidebarNav />
        </div>
