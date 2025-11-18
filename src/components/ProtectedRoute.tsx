@@ -28,12 +28,15 @@ const ProtectedRoute: React.FC<{ children?: React.ReactNode }> = ({ children }) 
     queryKey: ['profileCheck', session?.user?.id],
     queryFn: () => fetchProfileForCheck(session!.user.id),
     enabled: !!session?.user,
+    // Ensure this query is fresh to reflect profile completion status
+    staleTime: 0, 
   });
 
   const isLoading = isSessionLoading || (!!session && isProfileLoading);
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading application...</div>;
+    // Show a full-screen loading indicator while session and profile status are determined
+    return <div className="min-h-screen flex items-center justify-center text-lg font-medium">Loading application...</div>;
   }
 
   if (!session) {
@@ -53,6 +56,7 @@ const ProtectedRoute: React.FC<{ children?: React.ReactNode }> = ({ children }) 
     return <Navigate to="/" replace />;
   }
 
+  // 3. If profile is complete and not on setup route, allow access to children/Outlet.
   return children ? <>{children}</> : <Outlet />;
 };
 
