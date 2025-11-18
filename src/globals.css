@@ -4,77 +4,77 @@
 
 @layer base {
   :root {
-    --background: 266 90% 5%; /* Deep, dark purple */
+    --background: 248 90% 5%; /* Deep, dark purple hue */
     --foreground: 270 10% 90%; /* Light grey/off-white */
 
-    --card: 266 80% 10%; /* Slightly lighter purple for cards */
+    --card: 248 80% 10%; /* Slightly lighter purple for cards */
     --card-foreground: 270 10% 90%;
 
-    --popover: 266 80% 8%;
+    --popover: 248 80% 8%;
     --popover-foreground: 270 10% 90%;
 
-    --primary: 300 100% 50%; /* Neon Pink/Magenta */
+    --primary: 333 100% 71%; /* Pink: #FF6BA7 */
     --primary-foreground: 0 0% 0%; /* Black text on primary */
 
-    --secondary: 180 100% 50%; /* Neon Cyan */
+    --secondary: 191 100% 50%; /* Cyan: #00C2FF */
     --secondary-foreground: 0 0% 0%; /* Black text on secondary */
 
-    --muted: 266 50% 20%;
+    --muted: 248 50% 20%;
     --muted-foreground: 270 10% 60%;
 
-    --accent: 60 100% 50%; /* Neon Yellow */
+    --accent: 60 100% 50%; /* Neon Yellow (kept) */
     --accent-foreground: 0 0% 0%;
 
-    --destructive: 0 100% 50%; /* Bright Red */
+    --destructive: 0 100% 50%; /* Bright Red (kept) */
     --destructive-foreground: 0 0% 0%;
 
-    --border: 300 100% 30%; /* Darker pink for borders */
-    --input: 266 50% 15%;
-    --ring: 180 100% 50%; /* Cyan for focus rings */
+    --border: 248 100% 69%; /* Purple: #7B61FF */
+    --input: 248 50% 15%;
+    --ring: 191 100% 50%; /* Cyan */
 
     --radius: 0rem; /* Sharp corners */
 
     /* Sidebar variables for consistency */
-    --sidebar-background: 266 90% 5%;
+    --sidebar-background: 248 90% 5%;
     --sidebar-foreground: 270 10% 90%;
-    --sidebar-primary: 300 100% 50%;
+    --sidebar-primary: 333 100% 71%;
     --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 266 50% 20%;
-    --sidebar-accent-foreground: 180 100% 50%;
-    --sidebar-border: 266 50% 15%;
-    --sidebar-ring: 180 100% 50%;
+    --sidebar-accent: 248 50% 20%;
+    --sidebar-accent-foreground: 191 100% 50%;
+    --sidebar-border: 248 50% 15%;
+    --sidebar-ring: 191 100% 50%;
   }
 
   .dark {
     /* Cyberpunk is a dark theme by default, so this is identical */
-    --background: 266 90% 5%;
+    --background: 248 90% 5%;
     --foreground: 270 10% 90%;
-    --card: 266 80% 10%;
+    --card: 248 80% 10%;
     --card-foreground: 270 10% 90%;
-    --popover: 266 80% 8%;
+    --popover: 248 80% 8%;
     --popover-foreground: 270 10% 90%;
-    --primary: 300 100% 50%;
+    --primary: 333 100% 71%;
     --primary-foreground: 0 0% 0%;
-    --secondary: 180 100% 50%;
+    --secondary: 191 100% 50%;
     --secondary-foreground: 0 0% 0%;
-    --muted: 266 50% 20%;
+    --muted: 248 50% 20%;
     --muted-foreground: 270 10% 60%;
     --accent: 60 100% 50%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 0%;
-    --border: 300 100% 30%;
-    --input: 266 50% 15%;
-    --ring: 180 100% 50%;
+    --border: 248 100% 69%;
+    --input: 248 50% 15%;
+    --ring: 191 100% 50%;
     
-    --sidebar-background: 266 90% 5%;
+    --sidebar-background: 248 90% 5%;
     --sidebar-foreground: 270 10% 90%;
-    --sidebar-primary: 300 100% 50%;
+    --sidebar-primary: 333 100% 71%;
     --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 266 50% 20%;
-    --sidebar-accent-foreground: 180 100% 50%;
-    --sidebar-border: 266 50% 15%;
-    --sidebar-ring: 180 100% 50%;
+    --sidebar-accent: 248 50% 20%;
+    --sidebar-accent-foreground: 191 100% 50%;
+    --sidebar-border: 248 50% 15%;
+    --sidebar-ring: 191 100% 50%;
   }
 }
 
@@ -85,7 +85,7 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    /* Add a subtle grid background */
+    /* Update grid background to use the new primary color */
     background-image: 
       linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
       linear-gradient(to right, hsl(var(--primary) / 0.1) 1px, hsl(var(--background)) 1px);
