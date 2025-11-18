@@ -30,12 +30,12 @@ const Login = () => {
             variables: {
               default: {
                 colors: {
-                  brand: 'hsl(0 100% 71%)', // Vibrant Coral
-                  brandAccent: 'hsl(0 100% 71%)',
-                  inputBackground: 'hsl(36 27% 91%)', // Light Beige
-                  inputBorder: 'hsl(36 27% 85%)',
-                  inputFocus: 'hsl(0 100% 71%)',
-                  inputText: 'hsl(0 0% 20%)', // Dark Charcoal
+                  brand: 'hsl(142 76% 36%)', // Primary Teal/Green
+                  brandAccent: 'hsl(142 76% 36%)',
+                  inputBackground: 'hsl(210 40% 96.1%)', // Muted/Secondary
+                  inputBorder: 'hsl(214.3 31.8% 91.4%)', // Border
+                  inputFocus: 'hsl(142 76% 36%)',
+                  inputText: 'hsl(210 40% 15%)', // Foreground Dark
                 },
               },
             },
