@@ -154,13 +154,32 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   };
 
   const renderStatusBadge = () => {
+    let statusText: 'Active' | 'Closed';
+    let tooltipText: string;
+
     if (!poll.is_active) {
-      return <Badge variant="destructive">Closed (Manually)</Badge>;
+      statusText = 'Closed';
+      tooltipText = 'This poll was manually closed by the creator.';
+    } else if (poll.due_at && new Date(poll.due_at) < new Date()) {
+      statusText = 'Closed';
+      tooltipText = 'This poll is closed because the due date has passed.';
+    } else {
+      statusText = 'Active';
+      tooltipText = 'This poll is currently open for voting.';
     }
-    if (poll.due_at && new Date(poll.due_at) < new Date()) {
-      return <Badge variant="destructive">Closed (Expired)</Badge>;
-    }
-    return <Badge variant="default">Active</Badge>;
+
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Badge variant={statusText === 'Active' ? 'default' : 'destructive'}>
+            {statusText}
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{tooltipText}</p>
+        </TooltipContent>
+      </Tooltip>
+    );
   };
 
   const isPollActive = poll.is_active && (!poll.due_at || new Date(poll.due_at) > new Date());
@@ -197,9 +216,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
           <div className="flex flex-col items-end gap-2 md:flex-row md:items-center">
             <div className="flex items-center gap-2">
               {renderStatusBadge()}
-              <Badge variant="secondary" className="capitalize">
-                {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
-              </Badge>
             </div>
             <div className="flex items-center gap-2">
               <Button
