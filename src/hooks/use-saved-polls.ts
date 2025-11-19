@@ -21,22 +21,11 @@ const fetchSavedPolls = async (userId: string): Promise<Set<string>> => {
   return new Set(data.map((saved: SavedPoll) => saved.poll_id));
 };
 
-const toggleSaveStatus = async ({ userId, pollId, isSaved }: { userId: string; pollId: string; isSaved: boolean }) => {
-  if (isSaved) {
-    // Remove from saved polls
-    const { error } = await supabase
-      .from('saved_polls')
-      .delete()
-      .eq('user_id', userId)
-      .eq('poll_id', pollId);
-    if (error) throw error;
-  } else {
-    // Add to saved polls
-    const { error } = await supabase
-      .from('saved_polls')
-      .insert({ user_id: userId, poll_id: pollId });
-    if (error) throw error;
-  }
+const toggleSaveStatus = async ({ pollId }: { pollId: string }) => {
+  const { error } = await supabase.rpc('toggle_saved_poll', {
+    poll_id_to_toggle: pollId,
+  });
+  if (error) throw error;
 };
 
 export const useSavedPolls = () => {
@@ -51,10 +40,7 @@ export const useSavedPolls = () => {
   });
 
   const mutation = useMutation<void, Error, string, { previousSaved?: Set<string> }>({
-    mutationFn: (pollId: string) => {
-      const isSaved = savedPolls.has(pollId);
-      return toggleSaveStatus({ userId: user!.id, pollId, isSaved });
-    },
+    mutationFn: (pollId: string) => toggleSaveStatus({ pollId }),
     onMutate: async (pollId: string) => {
       await queryClient.cancelQueries({ queryKey });
       const previousSaved = queryClient.getQueryData<Set<string>>(queryKey);
