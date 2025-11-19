@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
-import { Pencil, BarChart3, Share2 } from 'lucide-react';
+import { Pencil, BarChart3, Share2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/use-user-role';
 
@@ -158,8 +158,22 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-3xl">{poll.title}</CardTitle>
+        <div className="flex items-start justify-between">
+          {/* Left side: Back button and Title */}
+          <div className="flex items-center space-x-3">
+            <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => navigate(-1)} 
+                title="Go Back"
+                className="text-muted-foreground hover:text-foreground"
+            >
+                <ArrowLeft className="h-6 w-6" />
+            </Button>
+            <CardTitle className="text-3xl">{poll.title}</CardTitle>
+          </div>
+          
+          {/* Right side: Action buttons and badges */}
           <div className="flex space-x-2">
             {/* Status and type badges are always shown */}
             {renderStatusBadge()}
