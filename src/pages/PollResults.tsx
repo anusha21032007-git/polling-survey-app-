@@ -1,17 +1,17 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { usePoll } from '@/hooks/use-poll';
-import { usePolls } from '@/hooks/use-polls';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePollSets } from '@/hooks/use-poll-sets';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import PollResultsView from '@/components/PollResultsView';
 import PollResultSummaryCard from '@/components/PollResultSummaryCard';
 import { useUserRole } from '@/hooks/use-user-role';
-import { useCurrentUserId } from '@/hooks/use-current-user-id'; // Import current user ID hook
+import { useCurrentUserId } from '@/hooks/use-current-user-id';
 
 // Component for the list view of all poll results
 const PollResultsList: React.FC = () => {
-  const { data: polls, isLoading, isError, error } = usePolls();
+  const { data: pollSets, isLoading, isError, error } = usePollSets();
   const { isAdmin, isLoading: isRoleLoading } = useUserRole();
   const currentUserId = useCurrentUserId();
 
@@ -20,10 +20,6 @@ const PollResultsList: React.FC = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold">Poll Results & Analytics</h1>
         <div className="space-y-8">
-          <Card>
-            <CardHeader><Skeleton className="h-8 w-3/4" /></CardHeader>
-            <CardContent><Skeleton className="h-64 w-full" /></CardContent>
-          </Card>
           <Card>
             <CardHeader><Skeleton className="h-8 w-3/4" /></CardHeader>
             <CardContent><Skeleton className="h-64 w-full" /></CardContent>
@@ -37,18 +33,17 @@ const PollResultsList: React.FC = () => {
     return <div className="text-destructive">Error loading polls: {error?.message}</div>;
   }
 
-  // Filter polls to only include those created by the current user, unless the user is an admin.
-  const pollsToDisplay = isAdmin 
-    ? polls 
-    : polls?.filter(poll => poll.user_id === currentUserId) || [];
+  const pollSetsToDisplay = isAdmin
+    ? pollSets
+    : pollSets?.filter(set => set.user_id === currentUserId) || [];
 
-  if (!pollsToDisplay || pollsToDisplay.length === 0) {
+  if (!pollSetsToDisplay || pollSetsToDisplay.length === 0) {
     return (
       <Card>
         <CardContent className="p-10 text-center">
           <p className="text-muted-foreground">
-            {isAdmin 
-              ? 'No polls found to display results for.' 
+            {isAdmin
+              ? 'No polls found to display results for.'
               : 'You have not created any polls yet.'
             }
           </p>
@@ -57,33 +52,28 @@ const PollResultsList: React.FC = () => {
     );
   }
 
-  // Admin View: Show detailed results for all polls
-  if (isAdmin) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold">Poll Results & Analytics (Admin View)</h1>
-        <p className="text-muted-foreground">
-          Here is a detailed breakdown of all polls.
-        </p>
-        <div className="space-y-8">
-          {pollsToDisplay.map(poll => (
-            <PollResultsView key={poll.id} poll={poll} />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const viewTitle = isAdmin ? "Poll Results & Analytics (Admin View)" : "My Poll Results";
+  const viewDescription = isAdmin
+    ? "Here is a summary of all polls, grouped by their set."
+    : "Here is a summary of the poll sets you created. Click on a poll to see its detailed results.";
 
-  // Regular User View: Show summary cards for their own polls
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <h1 className="text-3xl font-bold">My Poll Results</h1>
-      <p className="text-muted-foreground">
-        Here is a summary of the polls you created. Click on a poll to see a detailed breakdown of the results.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {pollsToDisplay.map(poll => (
-          <PollResultSummaryCard key={poll.id} poll={poll} />
+      <h1 className="text-3xl font-bold">{viewTitle}</h1>
+      <p className="text-muted-foreground">{viewDescription}</p>
+      <div className="space-y-8">
+        {pollSetsToDisplay.map(set => (
+          <Card key={set.id}>
+            <CardHeader>
+              <CardTitle>{set.title}</CardTitle>
+              {set.description && <CardDescription>{set.description}</CardDescription>}
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {set.polls.map(poll => (
+                <PollResultSummaryCard key={poll.id} poll={poll} />
+              ))}
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>
