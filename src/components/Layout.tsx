@@ -46,11 +46,14 @@ const Layout: React.FC = () => {
       </header>
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-grow p-4 md:p-8 overflow-auto animate-fade-in pb-20 md:pb-8">
+        <main className="flex-grow p-4 md:p-8 overflow-auto animate-fade-in pb-24 md:pb-8">
           <Outlet />
         </main>
       </div>
       {isMobile && <MobileFooterNav />}
+      <footer className="hidden md:block text-center p-4 text-sm text-muted-foreground border-t">
+        Developed By Anusha N
+      </footer>
     </div>
   );
 };

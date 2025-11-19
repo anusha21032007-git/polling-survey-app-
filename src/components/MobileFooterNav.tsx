@@ -19,7 +19,7 @@ const MobileFooterNav: React.FC = () => {
 
   if (isRoleLoading) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 h-16 bg-card border-t flex items-center justify-around p-2">
+      <div className="fixed bottom-0 left-0 right-0 h-20 bg-card border-t flex items-center justify-around p-2">
         {[...Array(3)].map((_, i) => (
           <Skeleton key={i} className="h-10 w-1/4 rounded-full" />
         ))}
@@ -28,8 +28,8 @@ const MobileFooterNav: React.FC = () => {
   }
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-card border-t border-border md:hidden">
-      <nav className="flex h-full items-center justify-around px-2">
+    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border md:hidden">
+      <nav className="flex h-16 items-center justify-around px-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -51,6 +51,9 @@ const MobileFooterNav: React.FC = () => {
           );
         })}
       </nav>
+      <p className="text-center text-xs text-muted-foreground pb-2">
+        Developed By Anusha N
+      </p>
     </footer>
   );
 };
