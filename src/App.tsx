@@ -14,7 +14,7 @@ import PollResults from "./pages/PollResults";
 import EditPoll from "./pages/EditPoll";
 import SetupProfile from "./pages/SetupProfile";
 import PollSetDetail from "./pages/PollSetDetail";
-import CartPage from "./pages/Cart";
+import SavedPollsPage from "./pages/SavedPolls";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +37,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/create-poll" element={<CreatePoll />} />
                 <Route path="/poll-results" element={<PollResults />} />
-                <Route path="/cart" element={<CartPage />} />
+                <Route path="/saved-polls" element={<SavedPollsPage />} />
                 <Route path="/sets/:id" element={<PollSetDetail />} />
                 <Route path="/polls/:id/edit" element={<EditPoll />} />
                 <Route path="/polls/:id/results" element={<PollResults />} />

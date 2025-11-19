@@ -6,7 +6,7 @@ import PollResultSummaryCard from '@/components/PollResultSummaryCard';
 import { ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const CartPage: React.FC = () => {
+const SavedPollsPage: React.FC = () => {
   const { cartPolls, isLoading } = usePollCart();
 
   return (
@@ -14,9 +14,9 @@ const CartPage: React.FC = () => {
       <div className="flex items-center space-x-3">
         <ShoppingCart className="h-8 w-8 text-primary" />
         <div>
-          <h1 className="text-3xl font-bold">My Poll Cart</h1>
+          <h1 className="text-3xl font-bold">Saved Polls</h1>
           <p className="text-muted-foreground">
-            Here are the polls you've saved. You can share them as a collection from the cart panel.
+            Here are the polls you've saved. You can share them as a collection from the slide-out panel.
           </p>
         </div>
       </div>
@@ -30,10 +30,10 @@ const CartPage: React.FC = () => {
       ) : cartPolls.length === 0 ? (
         <Card>
           <CardContent className="p-10 text-center">
-            <p className="text-lg text-muted-foreground">Your cart is empty.</p>
+            <p className="text-lg text-muted-foreground">You have no saved polls.</p>
             <p className="text-sm text-muted-foreground mt-2">
               Click the <ShoppingCart className="inline h-4 w-4" /> icon on any poll on the{' '}
-              <Link to="/poll-results" className="text-primary underline">Results</Link> page to add it here.
+              <Link to="/poll-results" className="text-primary underline">Results</Link> page to save it here.
             </p>
           </CardContent>
         </Card>
@@ -48,4 +48,4 @@ const CartPage: React.FC = () => {
   );
 };
 
-export default CartPage;
+export default SavedPollsPage;

@@ -10,7 +10,7 @@ const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/create-poll', label: 'Create', icon: PlusSquare },
   { href: '/poll-results', label: 'Results', icon: BarChart3 },
-  { href: '/cart', label: 'Cart', icon: ShoppingCart },
+  { href: '/saved-polls', label: 'Saved', icon: ShoppingCart },
 ];
 
 const MobileFooterNav: React.FC = () => {

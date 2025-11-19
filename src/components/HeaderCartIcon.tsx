@@ -14,7 +14,7 @@ const HeaderCartIcon: React.FC = () => {
       <Button
         variant="ghost"
         size="icon"
-        title="Poll Cart"
+        title="Saved Polls"
         className="relative hover:text-primary transition-all"
         onClick={() => setIsCartOpen(true)}
       >

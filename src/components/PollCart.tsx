@@ -18,7 +18,7 @@ const PollCart: React.FC<PollCartProps> = ({ isOpen, onOpenChange }) => {
 
   const handleShare = () => {
     if (cartPolls.length === 0) {
-      showError("Your cart is empty. Add some polls to share!");
+      showError("You have no saved polls to share!");
       return;
     }
     const pollLinks = cartPolls.map(poll => `${window.location.origin}/polls/${poll.id}`).join('\n');
@@ -34,9 +34,9 @@ const PollCart: React.FC<PollCartProps> = ({ isOpen, onOpenChange }) => {
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-md flex flex-col">
         <SheetHeader>
-          <SheetTitle className="flex items-center"><ShoppingCart className="mr-2 h-5 w-5" /> Poll Cart</SheetTitle>
+          <SheetTitle className="flex items-center"><ShoppingCart className="mr-2 h-5 w-5" /> Saved Polls</SheetTitle>
           <SheetDescription>
-            You have {cartPolls.length} poll(s) in your cart.
+            You have {cartPolls.length} poll(s) saved.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="flex-grow my-4">
@@ -45,7 +45,7 @@ const PollCart: React.FC<PollCartProps> = ({ isOpen, onOpenChange }) => {
               {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}
             </div>
           ) : cartPolls.length === 0 ? (
-            <div className="text-center text-muted-foreground p-10">Your cart is empty.</div>
+            <div className="text-center text-muted-foreground p-10">You have no saved polls.</div>
           ) : (
             <div className="space-y-3 p-1">
               {cartPolls.map(poll => (

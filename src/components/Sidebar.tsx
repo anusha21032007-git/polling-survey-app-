@@ -25,7 +25,7 @@ const SidebarNav = () => {
     { href: '/', label: 'Home', icon: Home },
     { href: '/create-poll', label: 'Create Poll', icon: PlusSquare },
     { href: '/poll-results', label: 'Results', icon: BarChart3 },
-    { href: '/cart', label: 'Cart', icon: ShoppingCart },
+    { href: '/saved-polls', label: 'Saved Polls', icon: ShoppingCart },
   ];
 
   return (
