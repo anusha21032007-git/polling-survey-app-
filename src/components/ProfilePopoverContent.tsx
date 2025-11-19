@@ -35,15 +35,16 @@ const ProfilePopoverContent: React.FC<ProfilePopoverContentProps> = ({ onClose }
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
 
-    // This error occurs if the session is already invalid. We can treat this as a successful sign-out.
-    if (error && error.name !== 'AuthSessionMissingError') {
-      console.error('Sign out error:', error);
-      showError('Failed to sign out.');
-    } else {
-      // Clear the query cache to remove all user-specific data
-      queryClient.clear();
-      navigate('/login');
+    if (error) {
+      // Log the error for debugging purposes, but don't block the user from logging out.
+      // Errors like 403 or AuthSessionMissingError can occur if the session is already invalid,
+      // but the client-side cleanup should still proceed.
+      console.error('Sign out error:', error.message);
     }
+
+    // Always clear the local cache and redirect to the login page.
+    queryClient.clear();
+    navigate('/login');
   };
 
   return (
