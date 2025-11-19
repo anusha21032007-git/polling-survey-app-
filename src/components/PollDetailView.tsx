@@ -169,7 +169,7 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           {/* Left side: Back button and Title */}
           <div className="flex items-center space-x-3">
             <Button 
@@ -181,11 +181,11 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
             >
                 <ArrowLeft className="h-6 w-6" />
             </Button>
-            <CardTitle className="text-3xl">{poll.title}</CardTitle>
+            <CardTitle className="text-2xl md:text-3xl">{poll.title}</CardTitle>
           </div>
           
           {/* Right side: Action buttons and badges */}
-          <div className="flex space-x-2">
+          <div className="flex items-center justify-end self-end md:self-auto flex-wrap gap-2">
             {/* Status and type badges are always shown */}
             {renderStatusBadge()}
             <Badge variant="secondary" className="capitalize">
