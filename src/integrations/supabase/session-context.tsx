@@ -8,6 +8,7 @@ interface SupabaseContextType {
   session: Session | null;
   user: User | null;
   isLoading: boolean;
+  signOut: () => Promise<void>;
 }
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined);
@@ -33,8 +34,18 @@ export const SupabaseSessionProvider: React.FC<{ children: React.ReactNode }> = 
     return () => subscription.unsubscribe();
   }, []);
 
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Sign out error:', error.message);
+    }
+    // Force client-side state update to ensure redirect, even if signOut fails
+    setSession(null);
+    setUser(null);
+  };
+
   return (
-    <SupabaseContext.Provider value={{ session, user, isLoading }}>
+    <SupabaseContext.Provider value={{ session, user, isLoading, signOut }}>
       {children}
     </SupabaseContext.Provider>
   );

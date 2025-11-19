@@ -7,7 +7,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, LogOut } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface ProfilePopoverContentProps {
@@ -15,7 +14,7 @@ interface ProfilePopoverContentProps {
 }
 
 const ProfilePopoverContent: React.FC<ProfilePopoverContentProps> = ({ onClose }) => {
-  const { user } = useSupabaseSession();
+  const { user, signOut } = useSupabaseSession();
   const { profile, isLoading, isError, updateProfile, isUpdating } = useProfile();
   const queryClient = useQueryClient();
 
@@ -31,17 +30,7 @@ const ProfilePopoverContent: React.FC<ProfilePopoverContentProps> = ({ onClose }
   };
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      // Log any errors for debugging, but the main redirect logic will still proceed
-      // because the session state will change regardless.
-      console.error('Sign out error:', error.message);
-    }
-
-    // Clear all cached data for the logged-out user.
-    // The redirect will be handled automatically by our ProtectedRoute component
-    // when it detects the session has ended.
+    await signOut();
     queryClient.clear();
   };
 
