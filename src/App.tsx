@@ -11,9 +11,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import CreatePoll from "./pages/CreatePoll";
 import PollResults from "./pages/PollResults";
-import PollDetail from "./pages/PollDetail";
 import EditPoll from "./pages/EditPoll";
-import SetupProfile from "./pages/SetupProfile"; // New import
+import SetupProfile from "./pages/SetupProfile";
+import PollSetDetail from "./pages/PollSetDetail"; // New import
 
 const queryClient = new QueryClient();
 
@@ -36,7 +36,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/create-poll" element={<CreatePoll />} />
                 <Route path="/poll-results" element={<PollResults />} />
-                <Route path="/polls/:id" element={<PollDetail />} />
+                <Route path="/sets/:id" element={<PollSetDetail />} />
                 <Route path="/polls/:id/edit" element={<EditPoll />} />
                 <Route path="/polls/:id/results" element={<PollResults />} />
               </Route>

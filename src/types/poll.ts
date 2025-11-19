@@ -13,6 +13,16 @@ export interface Poll {
   poll_type: PollType;
   options: PollOption[];
   is_active: boolean;
-  due_at: string | null; // Replaced starts_at and ends_at
+  due_at: string | null;
   created_at: string;
+  poll_set_id: string;
+}
+
+export interface PollSet {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string | null;
+  created_at: string;
+  polls: Poll[]; // Contains the array of polls within this set
 }

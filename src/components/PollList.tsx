@@ -1,10 +1,10 @@
 import React from 'react';
-import { usePolls } from '@/hooks/use-polls';
-import PollCard from './PollCard';
+import { usePollSets } from '@/hooks/use-poll-sets';
+import PollSetCard from './PollSetCard';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const PollList: React.FC = () => {
-  const { data: polls, isLoading, isError, error } = usePolls();
+  const { data: pollSets, isLoading, isError, error } = usePollSets();
 
   if (isLoading) {
     return (
@@ -24,7 +24,7 @@ const PollList: React.FC = () => {
     return <div className="text-destructive">Error loading polls: {error?.message || 'Unknown error'}</div>;
   }
 
-  if (!polls || polls.length === 0) {
+  if (!pollSets || pollSets.length === 0) {
     return (
       <div className="text-center p-10 border rounded-lg bg-muted/50">
         <p className="text-lg text-muted-foreground">No polls available yet. Be the first to create one!</p>
@@ -34,8 +34,8 @@ const PollList: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {polls.map((poll) => (
-        <PollCard key={poll.id} poll={poll} />
+      {pollSets.map((pollSet) => (
+        <PollSetCard key={pollSet.id} pollSet={pollSet} />
       ))}
     </div>
   );
