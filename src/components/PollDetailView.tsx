@@ -18,24 +18,13 @@ import { useUserRole } from '@/hooks/use-user-role';
 import { useSavedPolls } from '@/hooks/use-saved-polls';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Input } from './ui/input';
-import { Label } from './ui/label';
 
 interface PollDetailViewProps {
   poll: Poll;
+  anonymousVoterName: string | null;
 }
 
-const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
+const PollDetailView: React.FC<PollDetailViewProps> = ({ poll, anonymousVoterName }) => {
   const { user } = useSupabaseSession();
   const { isLoading: isRoleLoading } = useUserRole();
   const currentUserId = useCurrentUserId();
@@ -59,8 +48,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
 
   const [selectedOption, setSelectedOption] = useState<string | string[]>(initialSelectedOption);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [voterName, setVoterName] = useState('');
-  const [isNameDialogOpen, setIsNameDialogOpen] = useState(false);
   const [hasVotedAnonymously, setHasVotedAnonymously] = useState(false);
 
   useEffect(() => {
@@ -89,7 +76,7 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
     });
   };
 
-  const submitVote = async (anonymousName?: string) => {
+  const submitVote = async () => {
     setIsSubmitting(true);
     
     const selectedOptionsArray = Array.isArray(selectedOption) ? selectedOption : [selectedOption as string];
@@ -105,7 +92,7 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
         body: {
           poll_id: poll.id,
           option_ids: selectedOptionsArray,
-          voter_name: anonymousName,
+          voter_name: user ? undefined : anonymousVoterName,
         },
       });
   
@@ -130,20 +117,11 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   };
 
   const handleSubmitVote = async () => {
-    if (!user) {
-      setIsNameDialogOpen(true);
+    if (!user && !anonymousVoterName) {
+      showError("Cannot vote without providing a name.");
       return;
     }
     await submitVote();
-  };
-
-  const handleAnonymousVoteSubmit = async () => {
-    if (!voterName.trim()) {
-      showError("Please enter your name to vote.");
-      return;
-    }
-    setIsNameDialogOpen(false);
-    await submitVote(voterName.trim());
   };
 
   const renderStatusBadge = () => {
@@ -172,94 +150,72 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const isPollActive = poll.is_active && (!poll.due_at || new Date(poll.due_at) > new Date());
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-            <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} title="Go Back" className="text-muted-foreground hover:text-foreground"><ArrowLeft className="h-6 w-6" /></Button>
-              <div className="flex items-center gap-2">
-                {isPollOwner && (<Tooltip><TooltipTrigger><Star className="h-6 w-6 text-yellow-500 fill-yellow-500 flex-shrink-0" /></TooltipTrigger><TooltipContent><p>Created by You</p></TooltipContent></Tooltip>)}
-                <CardTitle className="text-2xl md:text-3xl">{poll.title}</CardTitle>
-              </div>
-            </div>
-            <div className="flex flex-col items-end gap-2 md:flex-row md:items-center">
-              <div className="flex items-center gap-2">{renderStatusBadge()}</div>
-              <div className="flex items-center gap-2">
-                {user && <Button variant="outline" size="icon" onClick={() => toggleSavePoll(poll.id)} disabled={isTogglingSave} title={isSaved ? 'Remove from saved polls' : 'Add to saved polls'}><Bookmark className={cn("h-4 w-4", isSaved ? "text-yellow-500 fill-yellow-500" : "")} /></Button>}
-                <Button variant="outline" size="icon" onClick={() => navigate(`/polls/${poll.id}/results`)} title="View Results"><BarChart3 className="h-4 w-4" /></Button>
-                {isPollOwner && (<Button variant="outline" size="icon" onClick={() => navigate(`/polls/${poll.id}/edit`)} title="Edit Poll"><Pencil className="h-4 w-4" /></Button>)}
-              </div>
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <Button variant="ghost" size="icon" onClick={() => navigate(-1)} title="Go Back" className="text-muted-foreground hover:text-foreground"><ArrowLeft className="h-6 w-6" /></Button>
+            <div className="flex items-center gap-2">
+              {isPollOwner && (<Tooltip><TooltipTrigger><Star className="h-6 w-6 text-yellow-500 fill-yellow-500 flex-shrink-0" /></TooltipTrigger><TooltipContent><p>Created by You</p></TooltipContent></Tooltip>)}
+              <CardTitle className="text-2xl md:text-3xl">{poll.title}</CardTitle>
             </div>
           </div>
-          {poll.description && (<CardDescription className="mt-2 text-lg">{poll.description}</CardDescription>)}
-          <p className="text-sm text-muted-foreground pt-2">
-            Created on: {format(new Date(poll.created_at), 'PPP')}
-            {poll.due_at && (<span> | Due: {format(new Date(poll.due_at), 'PPP p')}</span>)}
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {isRoleLoading || (user && isLoadingVotes) ? (
-            <div className="text-center text-muted-foreground">Loading poll status...</div>
-          ) : !isPollActive ? (
-            <div className="p-4 bg-red-100 text-red-800 rounded-md dark:bg-red-900 dark:text-red-200 text-center">This poll is closed and cannot accept new votes.</div>
-          ) : hasVotedAnonymously ? (
-            <div className="p-4 bg-green-100 text-green-800 rounded-md dark:bg-green-900 dark:text-green-200 text-center">Thank you for voting!</div>
-          ) : (
-            <>
-              <h3 className="text-xl font-semibold">{hasVoted ? 'Update Your Vote' : 'Cast Your Vote'}</h3>
-              {isSingleChoice ? (
-                <RadioGroup value={selectedOption as string} onValueChange={handleSingleVoteChange} className="space-y-3" disabled={isSubmitting}>
-                  {poll.options.map((option) => (
+          <div className="flex flex-col items-end gap-2 md:flex-row md:items-center">
+            <div className="flex items-center gap-2">{renderStatusBadge()}</div>
+            <div className="flex items-center gap-2">
+              {user && <Button variant="outline" size="icon" onClick={() => toggleSavePoll(poll.id)} disabled={isTogglingSave} title={isSaved ? 'Remove from saved polls' : 'Add to saved polls'}><Bookmark className={cn("h-4 w-4", isSaved ? "text-yellow-500 fill-yellow-500" : "")} /></Button>}
+              <Button variant="outline" size="icon" onClick={() => navigate(`/polls/${poll.id}/results`)} title="View Results"><BarChart3 className="h-4 w-4" /></Button>
+              {isPollOwner && (<Button variant="outline" size="icon" onClick={() => navigate(`/polls/${poll.id}/edit`)} title="Edit Poll"><Pencil className="h-4 w-4" /></Button>)}
+            </div>
+          </div>
+        </div>
+        {poll.description && (<CardDescription className="mt-2 text-lg">{poll.description}</CardDescription>)}
+        <p className="text-sm text-muted-foreground pt-2">
+          Created on: {format(new Date(poll.created_at), 'PPP')}
+          {poll.due_at && (<span> | Due: {format(new Date(poll.due_at), 'PPP p')}</span>)}
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {isRoleLoading || (user && isLoadingVotes) ? (
+          <div className="text-center text-muted-foreground">Loading poll status...</div>
+        ) : !isPollActive ? (
+          <div className="p-4 bg-red-100 text-red-800 rounded-md dark:bg-red-900 dark:text-red-200 text-center">This poll is closed and cannot accept new votes.</div>
+        ) : hasVotedAnonymously ? (
+          <div className="p-4 bg-green-100 text-green-800 rounded-md dark:bg-green-900 dark:text-green-200 text-center">Thank you for voting!</div>
+        ) : (
+          <>
+            <h3 className="text-xl font-semibold">{hasVoted ? 'Update Your Vote' : 'Cast Your Vote'}</h3>
+            {isSingleChoice ? (
+              <RadioGroup value={selectedOption as string} onValueChange={handleSingleVoteChange} className="space-y-3" disabled={isSubmitting}>
+                {poll.options.map((option) => (
+                  <label key={option.id} htmlFor={option.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-all duration-200 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:shadow-md">
+                    <RadioGroupItem value={option.id} id={option.id} />
+                    <span className="text-base font-medium flex-grow">{option.text}</span>
+                  </label>
+                ))}
+              </RadioGroup>
+            ) : (
+              <div className="space-y-3">
+                {poll.options.map((option) => {
+                  const currentSelections = Array.isArray(selectedOption) ? selectedOption : [];
+                  const isChecked = currentSelections.includes(option.id);
+                  return (
                     <label key={option.id} htmlFor={option.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-all duration-200 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:shadow-md">
-                      <RadioGroupItem value={option.id} id={option.id} />
+                      <Checkbox id={option.id} checked={isChecked} onCheckedChange={(checked) => handleMultipleVoteChange(option.id, checked as boolean)} disabled={isSubmitting} />
                       <span className="text-base font-medium flex-grow">{option.text}</span>
                     </label>
-                  ))}
-                </RadioGroup>
-              ) : (
-                <div className="space-y-3">
-                  {poll.options.map((option) => {
-                    const currentSelections = Array.isArray(selectedOption) ? selectedOption : [];
-                    const isChecked = currentSelections.includes(option.id);
-                    return (
-                      <label key={option.id} htmlFor={option.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-muted/50 transition-all duration-200 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary has-[:checked]:shadow-md">
-                        <Checkbox id={option.id} checked={isChecked} onCheckedChange={(checked) => handleMultipleVoteChange(option.id, checked as boolean)} disabled={isSubmitting} />
-                        <span className="text-base font-medium flex-grow">{option.text}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              )}
-              <Button onClick={handleSubmitVote} className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Submitting...' : hasVoted ? 'Update Vote' : 'Submit Vote'}
-              </Button>
-              {hasVoted && (<p className="text-sm text-green-600 dark:text-green-400 text-center">You have already voted in this poll. You can change your selection above.</p>)}
-            </>
-          )}
-        </CardContent>
-      </Card>
-      <AlertDialog open={isNameDialogOpen} onOpenChange={setIsNameDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Enter Your Name to Vote</AlertDialogTitle>
-            <AlertDialogDescription>
-              Since you're not logged in, please provide a name to associate with your vote.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="voter-name" className="text-right">Name</Label>
-              <Input id="voter-name" value={voterName} onChange={(e) => setVoterName(e.target.value)} className="col-span-3" placeholder="Your Name" />
-            </div>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleAnonymousVoteSubmit}>Submit Vote</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+                  );
+                })}
+              </div>
+            )}
+            <Button onClick={handleSubmitVote} className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : hasVoted ? 'Update Vote' : 'Submit Vote'}
+            </Button>
+            {hasVoted && (<p className="text-sm text-green-600 dark:text-green-400 text-center">You have already voted in this poll. You can change your selection above.</p>)}
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

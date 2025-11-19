@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePollSet } from '@/hooks/use-poll-set';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,11 +18,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { showSuccess, showError } from '@/utils/toast';
+import { useSupabaseSession } from '@/integrations/supabase/session-context';
+import AnonymousVoterGate from '@/components/AnonymousVoterGate';
 
 const PollSetDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const setId = id || '';
   const { data: pollSet, isLoading, isError, error } = usePollSet(setId);
+  const { user, isLoading: isSessionLoading } = useSupabaseSession();
+  const [anonymousVoterName, setAnonymousVoterName] = useState<string | null>(() => sessionStorage.getItem('anonymousVoterName'));
 
   const handleShare = () => {
     const pollSetUrl = window.location.href;
@@ -33,7 +37,12 @@ const PollSetDetail: React.FC = () => {
     });
   };
 
-  if (isLoading) {
+  const handleNameProvided = (name: string) => {
+    sessionStorage.setItem('anonymousVoterName', name);
+    setAnonymousVoterName(name);
+  };
+
+  if (isLoading || isSessionLoading) {
     return (
       <div className="max-w-3xl mx-auto space-y-6">
         <Skeleton className="h-10 w-3/4" />
@@ -43,6 +52,11 @@ const PollSetDetail: React.FC = () => {
         </Card>
       </div>
     );
+  }
+
+  // Gate for anonymous users
+  if (!user && !anonymousVoterName) {
+    return <AnonymousVoterGate onNameProvided={handleNameProvided} />;
   }
 
   if (isError) {
@@ -84,7 +98,7 @@ const PollSetDetail: React.FC = () => {
       
       <div className="space-y-6">
         {pollSet.polls.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()).map(poll => (
-          <PollDetailView key={poll.id} poll={poll} />
+          <PollDetailView key={poll.id} poll={poll} anonymousVoterName={anonymousVoterName} />
         ))}
       </div>
     </div>
