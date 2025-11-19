@@ -9,6 +9,7 @@ import { ArrowLeft, LogOut } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ProfilePopoverContentProps {
   onClose: () => void;
@@ -18,6 +19,7 @@ const ProfilePopoverContent: React.FC<ProfilePopoverContentProps> = ({ onClose }
   const { user } = useSupabaseSession();
   const { profile, isLoading, isError, updateProfile, isUpdating } = useProfile();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (data: ProfileFormValues) => {
     try {
@@ -32,10 +34,14 @@ const ProfilePopoverContent: React.FC<ProfilePopoverContentProps> = ({ onClose }
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) {
+
+    // This error occurs if the session is already invalid. We can treat this as a successful sign-out.
+    if (error && error.name !== 'AuthSessionMissingError') {
       console.error('Sign out error:', error);
       showError('Failed to sign out.');
     } else {
+      // Clear the query cache to remove all user-specific data
+      queryClient.clear();
       navigate('/login');
     }
   };
