@@ -40,7 +40,9 @@ const ProtectedRoute: React.FC<{ children?: React.ReactNode }> = ({ children }) 
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />;
+    // If not logged in, redirect to login and pass the current path as a query parameter
+    const redirectTo = location.pathname !== '/' ? `?redirect_to=${location.pathname}` : '';
+    return <Navigate to={`/login${redirectTo}`} replace />;
   }
 
   const isProfileIncomplete = profile && !profile.full_name;

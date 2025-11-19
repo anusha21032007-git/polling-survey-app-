@@ -2,18 +2,20 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { useSupabaseSession } from '@/integrations/supabase/session-context';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 
 const Login = () => {
   const { session, isLoading } = useSupabaseSession();
+  const [searchParams] = useSearchParams();
+  const redirectToPath = searchParams.get('redirect_to') || '/';
 
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
-  // Redirect authenticated users to the home page
+  // Redirect authenticated users to their intended destination or home page
   if (session) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={redirectToPath} replace />;
   }
 
   return (
@@ -41,7 +43,7 @@ const Login = () => {
             },
           }}
           theme="light"
-          redirectTo={window.location.origin + '/'}
+          redirectTo={window.location.origin + redirectToPath}
         />
       </div>
     </div>
