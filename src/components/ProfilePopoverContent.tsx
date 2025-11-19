@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, LogOut } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface ProfilePopoverContentProps {
@@ -18,7 +17,6 @@ interface ProfilePopoverContentProps {
 const ProfilePopoverContent: React.FC<ProfilePopoverContentProps> = ({ onClose }) => {
   const { user } = useSupabaseSession();
   const { profile, isLoading, isError, updateProfile, isUpdating } = useProfile();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const handleSubmit = async (data: ProfileFormValues) => {
@@ -36,15 +34,15 @@ const ProfilePopoverContent: React.FC<ProfilePopoverContentProps> = ({ onClose }
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      // Log the error for debugging purposes, but don't block the user from logging out.
-      // Errors like 403 or AuthSessionMissingError can occur if the session is already invalid,
-      // but the client-side cleanup should still proceed.
+      // Log any errors for debugging, but the main redirect logic will still proceed
+      // because the session state will change regardless.
       console.error('Sign out error:', error.message);
     }
 
-    // Always clear the local cache and redirect to the login page.
+    // Clear all cached data for the logged-out user.
+    // The redirect will be handled automatically by our ProtectedRoute component
+    // when it detects the session has ended.
     queryClient.clear();
-    navigate('/login');
   };
 
   return (
