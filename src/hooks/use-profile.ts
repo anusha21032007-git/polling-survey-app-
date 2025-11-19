@@ -13,22 +13,38 @@ export interface Profile {
   updated_at: string;
 }
 
-const fetchProfile = async (): Promise<Profile | null> => {
-  const { data, error } = await supabase.functions.invoke('profile', { method: 'GET' });
-  if (error) throw new Error(error.message);
+const fetchProfile = async (userId: string): Promise<Profile | null> => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+
+  if (error && error.code !== 'PGRST116') { // Ignore "no rows found" error
+    console.error('Error fetching profile:', error);
+    throw new Error(error.message);
+  }
   return data;
 };
 
-const updateProfile = async (profileData: Partial<Omit<Profile, 'id' | 'updated_at'>>) => {
-  const { data, error } = await supabase.functions.invoke('profile', {
-    method: 'PUT',
-    body: profileData,
-  });
-  
-  if (error) throw new Error(error.message);
-  // Handle application-level errors returned from the function
-  if (data.error) throw new Error(data.error);
-  
+const updateProfile = async ({ userId, profileData }: { userId: string, profileData: Partial<Omit<Profile, 'id' | 'updated_at'>> }) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({
+      ...profileData,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', userId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating profile:', error);
+    if (error.code === '23505') { // Unique constraint violation (e.g., username)
+      throw new Error('Username is already taken.');
+    }
+    throw new Error(error.message);
+  }
   return data;
 };
 
@@ -38,16 +54,14 @@ export const useProfile = () => {
 
   const { data: profile, isLoading, isError } = useQuery<Profile | null, Error>({
     queryKey: ['profile', user?.id],
-    queryFn: fetchProfile,
+    queryFn: () => fetchProfile(user!.id),
     enabled: !!user,
   });
 
   const mutation = useMutation<Profile, Error, Partial<Omit<Profile, 'id' | 'updated_at'>>>({
-    mutationFn: updateProfile,
+    mutationFn: (profileData) => updateProfile({ userId: user!.id, profileData }),
     onSuccess: (data) => {
-      // Update the cache with the new profile data
       queryClient.setQueryData(['profile', user?.id], data);
-      // Invalidate the check query to allow navigation away from the profile page
       queryClient.invalidateQueries({ queryKey: ['profileCheck', user?.id] });
     },
   });
