@@ -12,6 +12,7 @@ import {
 import ProfilePopoverContent from './ProfilePopoverContent';
 import MobileFooterNav from './MobileFooterNav';
 import { useIsMobile } from '@/hooks/use-mobile';
+import HeaderCartIcon from './HeaderCartIcon'; // New import
 
 const Layout: React.FC = () => {
   const { user } = useSupabaseSession();
@@ -25,12 +26,13 @@ const Layout: React.FC = () => {
           <h1 className="text-xl font-bold">
             <a href="/">Polling App</a>
           </h1>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             {user && (
               <span className="text-sm text-muted-foreground hidden sm:inline">
                 {user.email}
               </span>
             )}
+            <HeaderCartIcon />
             <Popover open={isProfileOpen} onOpenChange={setIsProfileOpen}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" title="User Menu" className="hover:text-primary transition-all">
