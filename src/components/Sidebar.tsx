@@ -52,7 +52,7 @@ const SidebarNav = () => {
 
 const Sidebar = () => {
   return (
-    <aside className="hidden md:block w-64 flex-shrink-0 border-r bg-background">
+    <aside className="hidden md:block w-64 flex-shrink-0 border-r bg-background h-[calc(100vh-4rem)] sticky top-16">
        <div className="p-4">
          <SidebarNav />
        </div>
