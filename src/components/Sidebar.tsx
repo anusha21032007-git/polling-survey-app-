@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, PlusSquare, BarChart3, ShoppingCart } from 'lucide-react';
+import { Home, PlusSquare, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUserRole } from '@/hooks/use-user-role';
@@ -14,7 +14,7 @@ const SidebarNav = () => {
   if (isRoleLoading) {
     return (
       <div className="space-y-2 p-2">
-        {[...Array(4)].map((_, i) => (
+        {[...Array(3)].map((_, i) => (
           <Skeleton key={i} className="h-10 w-full" />
         ))}
       </div>
@@ -25,7 +25,6 @@ const SidebarNav = () => {
     { href: '/', label: 'Home', icon: Home },
     { href: '/create-poll', label: 'Create Poll', icon: PlusSquare },
     { href: '/poll-results', label: 'Results', icon: BarChart3 },
-    { href: '/saved-polls', label: 'Saved Polls', icon: ShoppingCart },
   ];
 
   return (

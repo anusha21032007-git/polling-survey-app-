@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
-import { Pencil, BarChart3, Share2, ArrowLeft, Star, Bookmark, ShoppingCart } from 'lucide-react';
+import { Pencil, BarChart3, Share2, ArrowLeft, Star, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/use-user-role';
 import {
@@ -29,7 +29,6 @@ import {
 import { useUserFavorites } from '@/hooks/use-user-favorites';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { usePollCart } from '@/hooks/use-poll-cart';
 
 interface PollDetailViewProps {
   poll: Poll;
@@ -44,11 +43,9 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const queryClient = useQueryClient();
   const { data: existingVotes, isLoading: isLoadingVotes } = useUserVote(poll.id);
   const { favorites, toggleFavorite, isToggling } = useUserFavorites();
-  const { cartPollIds, toggleCart, isToggling: isTogglingCart } = usePollCart();
   
   const isSingleChoice = poll.poll_type === 'single';
   const isFavorited = favorites.has(poll.id);
-  const isInCart = cartPollIds.includes(poll.id);
 
   const initialSelectedOption = React.useMemo(() => {
     if (existingVotes) {
@@ -221,15 +218,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
               {renderStatusBadge()}
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => toggleCart(poll.id)}
-                disabled={isTogglingCart}
-                title={isInCart ? 'Remove from cart' : 'Add to cart'}
-              >
-                <ShoppingCart className={cn("h-4 w-4", isInCart ? "text-primary fill-primary/20" : "")} />
-              </Button>
               <Button
                 variant="outline"
                 size="icon"

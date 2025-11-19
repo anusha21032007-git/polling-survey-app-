@@ -4,13 +4,12 @@ import { usePollResults } from '@/hooks/use-poll-results';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
-import { Vote, Clock, Star, Bookmark, ShoppingCart } from 'lucide-react';
+import { Vote, Clock, Star, Bookmark } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
 import { useUserFavorites } from '@/hooks/use-user-favorites';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
-import { usePollCart } from '@/hooks/use-poll-cart';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PollResultSummaryCardProps {
@@ -21,11 +20,9 @@ const PollResultSummaryCard: React.FC<PollResultSummaryCardProps> = ({ poll }) =
   const { data: results, isLoading } = usePollResults(poll.id);
   const currentUserId = useCurrentUserId();
   const { favorites, toggleFavorite, isToggling: isTogglingFavorite } = useUserFavorites();
-  const { cartPollIds, toggleCart, isToggling: isTogglingCart } = usePollCart();
 
   const isOwner = poll.user_id === currentUserId;
   const isFavorited = favorites.has(poll.id);
-  const isInCart = cartPollIds.includes(poll.id);
 
   const totalVotes = React.useMemo(() => (results ? results.totalVotes : 0), [results]);
   const isExpired = poll.due_at && new Date(poll.due_at) < new Date();
@@ -66,9 +63,6 @@ const PollResultSummaryCard: React.FC<PollResultSummaryCardProps> = ({ poll }) =
               {isLoading ? <Skeleton className="h-6 w-24" /> : <span>{totalVotes} Total Votes</span>}
             </div>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={(e) => handleCardAction(e, () => toggleCart(poll.id))} disabled={isTogglingCart} className="h-8 w-8 z-10" aria-label={isInCart ? 'Remove from cart' : 'Add to cart'}>
-                <ShoppingCart className={cn("h-5 w-5", isInCart ? "text-primary fill-primary/20" : "text-muted-foreground")} />
-              </Button>
               <Button variant="ghost" size="icon" onClick={(e) => handleCardAction(e, () => toggleFavorite(poll.id))} disabled={isTogglingFavorite} className="h-8 w-8 z-10" aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}>
                 <Bookmark className={cn("h-5 w-5", isFavorited ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground")} />
               </Button>

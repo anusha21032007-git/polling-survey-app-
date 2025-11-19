@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, PlusSquare, BarChart3, ShoppingCart } from 'lucide-react';
+import { Home, PlusSquare, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUserRole } from '@/hooks/use-user-role';
@@ -10,7 +10,6 @@ const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/create-poll', label: 'Create', icon: PlusSquare },
   { href: '/poll-results', label: 'Results', icon: BarChart3 },
-  { href: '/saved-polls', label: 'Saved', icon: ShoppingCart },
 ];
 
 const MobileFooterNav: React.FC = () => {
@@ -21,8 +20,8 @@ const MobileFooterNav: React.FC = () => {
   if (isRoleLoading) {
     return (
       <div className="fixed bottom-0 left-0 right-0 h-20 bg-card border-t flex items-center justify-around p-2">
-        {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-10 w-1/5 rounded-full" />
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-10 w-1/4 rounded-full" />
         ))}
       </div>
     );
