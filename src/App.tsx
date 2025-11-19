@@ -27,7 +27,8 @@ const App = () => (
         <SupabaseSessionProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
-            
+            <Route path="/sets/:id" element={<PollSetDetail />} />
+
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               {/* Mandatory Onboarding Route (no layout wrapper) */}
@@ -38,7 +39,6 @@ const App = () => (
                 <Route path="/create-poll" element={<CreatePoll />} />
                 <Route path="/poll-results" element={<PollResults />} />
                 <Route path="/saved-polls" element={<SavedPollsPage />} />
-                <Route path="/sets/:id" element={<PollSetDetail />} />
                 <Route path="/polls/:id/edit" element={<EditPoll />} />
                 <Route path="/polls/:id/results" element={<PollResults />} />
               </Route>

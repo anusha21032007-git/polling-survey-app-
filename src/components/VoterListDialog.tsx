@@ -15,16 +15,12 @@ interface VoterListDialogProps {
 const VoterListDialog: React.FC<VoterListDialogProps> = ({ pollId, isOpen, onOpenChange, totalResponses }) => {
   const { data: voters, isLoading, isError } = usePollVoters(pollId, isOpen);
 
-  const renderVoterItem = (voter: Voter) => {
-    const displayName = voter.full_name || voter.username || 'Anonymous User';
-    const secondaryInfo = voter.full_name && voter.username ? `@${voter.username}` : '';
-
+  const renderVoterItem = (voter: Voter, index: number) => {
     return (
-      <div key={voter.user_id} className="flex items-center space-x-3 p-3 border-b last:border-b-0">
+      <div key={index} className="flex items-center space-x-3 p-3 border-b last:border-b-0">
         <User className="h-5 w-5 text-muted-foreground" />
         <div>
-          <p className="font-medium">{displayName}</p>
-          {secondaryInfo && <p className="text-sm text-muted-foreground">{secondaryInfo}</p>}
+          <p className="font-medium">{voter.display_name}</p>
         </div>
       </div>
     );
@@ -52,7 +48,7 @@ const VoterListDialog: React.FC<VoterListDialogProps> = ({ pollId, isOpen, onOpe
             ) : voters.length === 0 ? (
               <p className="text-muted-foreground">No unique voters found yet.</p>
             ) : (
-              voters.map(renderVoterItem)
+              voters.map((voter, index) => renderVoterItem(voter, index))
             )}
           </div>
         </ScrollArea>
