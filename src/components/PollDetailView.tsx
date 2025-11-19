@@ -12,20 +12,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
-import { Pencil, BarChart3, Share2, ArrowLeft, Star, Bookmark } from 'lucide-react';
+import { Pencil, BarChart3, ArrowLeft, Star, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/use-user-role';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { useSavedPolls } from '@/hooks/use-saved-polls';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -144,15 +133,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
     }
   };
 
-  const handleShare = () => {
-    const pollUrl = window.location.href;
-    navigator.clipboard.writeText(pollUrl).then(() => {
-      showSuccess('Poll link copied to clipboard!');
-    }).catch(() => {
-      showError('Failed to copy link.');
-    });
-  };
-
   const renderStatusBadge = () => {
     let statusText: 'Active' | 'Closed';
     let tooltipText: string;
@@ -227,22 +207,6 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
               >
                 <Bookmark className={cn("h-4 w-4", isSaved ? "text-yellow-500 fill-yellow-500" : "")} />
               </Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline" size="icon" title="Share Poll"><Share2 className="h-4 w-4" /></Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Share Poll</AlertDialogTitle>
-                    <AlertDialogDescription>Copy the link below to share this poll with others.</AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <div className="p-2 bg-muted rounded-md text-sm overflow-x-auto"><code>{window.location.href}</code></div>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleShare}>Copy Link</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
               <Button variant="outline" size="icon" onClick={() => navigate(`/polls/${poll.id}/results`)} title="View Results"><BarChart3 className="h-4 w-4" /></Button>
               {isPollOwner && (<Button variant="outline" size="icon" onClick={() => navigate(`/polls/${poll.id}/edit`)} title="Edit Poll"><Pencil className="h-4 w-4" /></Button>)}
             </div>

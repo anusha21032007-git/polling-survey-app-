@@ -3,12 +3,35 @@ import { useParams } from 'react-router-dom';
 import { usePollSet } from '@/hooks/use-poll-set';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import PollDetailView from '@/components/PollDetailView'; // Re-using the detailed view component for each poll
+import PollDetailView from '@/components/PollDetailView';
+import { Button } from '@/components/ui/button';
+import { Share2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { showSuccess, showError } from '@/utils/toast';
 
 const PollSetDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const setId = id || '';
   const { data: pollSet, isLoading, isError, error } = usePollSet(setId);
+
+  const handleShare = () => {
+    const pollSetUrl = window.location.href;
+    navigator.clipboard.writeText(pollSetUrl).then(() => {
+      showSuccess('Poll set link copied to clipboard!');
+    }).catch(() => {
+      showError('Failed to copy link.');
+    });
+  };
 
   if (isLoading) {
     return (
@@ -36,9 +59,27 @@ const PollSetDetail: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-4xl font-bold">{pollSet.title}</h1>
-        {pollSet.description && <p className="text-lg text-muted-foreground mt-2">{pollSet.description}</p>}
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-4xl font-bold">{pollSet.title}</h1>
+          {pollSet.description && <p className="text-lg text-muted-foreground mt-2">{pollSet.description}</p>}
+        </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" size="icon" title="Share Poll Set"><Share2 className="h-5 w-5" /></Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Share Poll Set</AlertDialogTitle>
+              <AlertDialogDescription>Copy the link below to share this entire set of polls with others.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="p-2 bg-muted rounded-md text-sm overflow-x-auto"><code>{window.location.href}</code></div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleShare}>Copy Link</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       
       <div className="space-y-6">
