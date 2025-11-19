@@ -9,37 +9,43 @@ export interface Voter {
 }
 
 const fetchPollVoters = async (pollId: string): Promise<Voter[]> => {
-  // Fetch unique user_ids from votes table and join with profiles to get usernames/full names
-  const { data, error } = await supabase
+  // Step 1: Fetch all votes for the given poll to get the user IDs
+  const { data: votes, error: votesError } = await supabase
     .from('votes')
-    .select('user_id, profiles(username, full_name)')
-    .eq('poll_id', pollId)
-    .limit(1000); // Limit to prevent massive data loads
+    .select('user_id')
+    .eq('poll_id', pollId);
 
-  if (error) {
-    console.error('Error fetching poll voters:', error);
+  if (votesError) {
+    console.error('Error fetching votes for voters:', votesError);
     showError('Failed to load voter list.');
-    throw new Error(error.message);
+    throw new Error(votesError.message);
   }
 
-  // Process data to extract unique voters and their profile info
-  const uniqueVotersMap = new Map<string, Voter>();
+  if (!votes || votes.length === 0) {
+    return []; // No voters yet
+  }
 
-  data.forEach((voteRecord: any) => {
-    const userId = voteRecord.user_id;
-    if (!uniqueVotersMap.has(userId)) {
-      // Ensure profile data is handled safely, even if null
-      const profile = Array.isArray(voteRecord.profiles) ? voteRecord.profiles[0] : voteRecord.profiles;
-      
-      uniqueVotersMap.set(userId, {
-        user_id: userId,
-        username: profile?.username || null,
-        full_name: profile?.full_name || null,
-      });
-    }
-  });
+  // Step 2: Extract unique user IDs from the votes
+  const userIds = [...new Set(votes.map((vote) => vote.user_id))];
 
-  return Array.from(uniqueVotersMap.values());
+  // Step 3: Fetch the profiles for the unique user IDs
+  const { data: profiles, error: profilesError } = await supabase
+    .from('profiles')
+    .select('id, username, full_name')
+    .in('id', userIds);
+
+  if (profilesError) {
+    console.error('Error fetching voter profiles:', profilesError);
+    showError('Failed to load voter list.');
+    throw new Error(profilesError.message);
+  }
+
+  // Step 4: Map the profile data to the Voter interface
+  return profiles.map(profile => ({
+    user_id: profile.id,
+    username: profile.username,
+    full_name: profile.full_name,
+  }));
 };
 
 export const usePollVoters = (pollId: string, enabled: boolean = true) => {
