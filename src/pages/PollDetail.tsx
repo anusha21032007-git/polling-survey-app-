@@ -12,7 +12,7 @@ const PollDetail: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-xl mx-auto space-y-6">
         <Skeleton className="h-10 w-3/4" />
         <Card>
           <CardHeader><Skeleton className="h-6 w-1/2" /></CardHeader>
@@ -28,7 +28,7 @@ const PollDetail: React.FC = () => {
 
   if (isError) {
     return (
-      <div className="max-w-3xl mx-auto text-destructive p-6">
+      <div className="max-w-xl mx-auto text-destructive p-6">
         Error loading poll: {error?.message || 'Unknown error'}
       </div>
     );
@@ -36,14 +36,14 @@ const PollDetail: React.FC = () => {
 
   if (!poll) {
     return (
-      <div className="max-w-3xl mx-auto text-center p-10 border rounded-lg bg-muted/50">
+      <div className="max-w-xl mx-auto text-center p-10 border rounded-lg bg-muted/50">
         <p className="text-lg text-muted-foreground">Poll not found.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-xl mx-auto">
       <PollDetailView poll={poll} />
     </div>
   );
