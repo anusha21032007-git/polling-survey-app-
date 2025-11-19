@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { showError } from '@/utils/toast';
 
 export interface Voter {
   user_id: string;
@@ -16,6 +17,7 @@ const fetchPollVoters = async (pollId: string): Promise<Voter[]> => {
 
   if (votesError) {
     console.error('Error fetching votes for voters:', votesError);
+    showError('Failed to load voter list.');
     throw new Error(votesError.message);
   }
 
@@ -37,6 +39,7 @@ const fetchPollVoters = async (pollId: string): Promise<Voter[]> => {
 
   if (profilesError) {
     console.error('Error fetching voter profiles:', profilesError);
+    showError('Failed to load voter list.');
     throw new Error(profilesError.message);
   }
 
