@@ -26,7 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useUserFavorites } from '@/hooks/use-user-favorites';
+import { useSavedPolls } from '@/hooks/use-saved-polls';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -42,10 +42,10 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: existingVotes, isLoading: isLoadingVotes } = useUserVote(poll.id);
-  const { favorites, toggleFavorite, isToggling } = useUserFavorites();
+  const { savedPolls, toggleSavePoll, isTogglingSave } = useSavedPolls();
   
   const isSingleChoice = poll.poll_type === 'single';
-  const isFavorited = favorites.has(poll.id);
+  const isSaved = savedPolls.has(poll.id);
 
   const initialSelectedOption = React.useMemo(() => {
     if (existingVotes) {
@@ -221,11 +221,11 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => toggleFavorite(poll.id)}
-                disabled={isToggling}
-                title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                onClick={() => toggleSavePoll(poll.id)}
+                disabled={isTogglingSave}
+                title={isSaved ? 'Remove from saved polls' : 'Add to saved polls'}
               >
-                <Bookmark className={cn("h-4 w-4", isFavorited ? "text-yellow-500 fill-yellow-500" : "")} />
+                <Bookmark className={cn("h-4 w-4", isSaved ? "text-yellow-500 fill-yellow-500" : "")} />
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>

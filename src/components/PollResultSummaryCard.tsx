@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { Vote, Clock, Star, Bookmark } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
-import { useUserFavorites } from '@/hooks/use-user-favorites';
+import { useSavedPolls } from '@/hooks/use-saved-polls';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -19,10 +19,10 @@ interface PollResultSummaryCardProps {
 const PollResultSummaryCard: React.FC<PollResultSummaryCardProps> = ({ poll }) => {
   const { data: results, isLoading } = usePollResults(poll.id);
   const currentUserId = useCurrentUserId();
-  const { favorites, toggleFavorite, isToggling: isTogglingFavorite } = useUserFavorites();
+  const { savedPolls, toggleSavePoll, isTogglingSave } = useSavedPolls();
 
   const isOwner = poll.user_id === currentUserId;
-  const isFavorited = favorites.has(poll.id);
+  const isSaved = savedPolls.has(poll.id);
 
   const totalVotes = React.useMemo(() => (results ? results.totalVotes : 0), [results]);
   const isExpired = poll.due_at && new Date(poll.due_at) < new Date();
@@ -63,8 +63,8 @@ const PollResultSummaryCard: React.FC<PollResultSummaryCardProps> = ({ poll }) =
               {isLoading ? <Skeleton className="h-6 w-24" /> : <span>{totalVotes} Total Votes</span>}
             </div>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={(e) => handleCardAction(e, () => toggleFavorite(poll.id))} disabled={isTogglingFavorite} className="h-8 w-8 z-10" aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}>
-                <Bookmark className={cn("h-5 w-5", isFavorited ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground")} />
+              <Button variant="ghost" size="icon" onClick={(e) => handleCardAction(e, () => toggleSavePoll(poll.id))} disabled={isTogglingSave} className="h-8 w-8 z-10" aria-label={isSaved ? 'Remove from saved polls' : 'Add to saved polls'}>
+                <Bookmark className={cn("h-5 w-5", isSaved ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground")} />
               </Button>
             </div>
           </div>
