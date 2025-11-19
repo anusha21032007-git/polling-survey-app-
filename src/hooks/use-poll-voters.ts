@@ -9,46 +9,41 @@ export interface Voter {
 }
 
 const fetchPollVoters = async (pollId: string): Promise<Voter[]> => {
-  // Step 1: Fetch all votes for the poll to get the user IDs
-  const { data: votes, error: votesError } = await supabase
+  // This query now works because of the new foreign key relationship.
+  // It fetches votes and joins the related profile in a single request.
+  const { data, error } = await supabase
     .from('votes')
-    .select('user_id')
+    .select('user_id, profiles(username, full_name)')
     .eq('poll_id', pollId);
 
-  if (votesError) {
-    console.error('Error fetching votes for voters:', votesError);
+  if (error) {
+    console.error('Error fetching poll voters:', error);
     showError('Failed to load voter list.');
-    throw new Error(votesError.message);
+    throw new Error(error.message);
   }
 
-  if (!votes || votes.length === 0) {
-    return []; // No voters yet, return an empty array.
-  }
-
-  // Step 2: Extract the unique user IDs from the votes
-  const userIds = [...new Set(votes.map((vote) => vote.user_id))];
-  if (userIds.length === 0) {
+  if (!data) {
     return [];
   }
 
-  // Step 3: Fetch the profiles for those unique user IDs
-  const { data: profiles, error: profilesError } = await supabase
-    .from('profiles')
-    .select('id, username, full_name')
-    .in('id', userIds);
+  // The data returns duplicates if a user voted multiple times (in a multiple-choice poll).
+  // We need to create a unique list of voters.
+  const uniqueVoters = new Map<string, Voter>();
 
-  if (profilesError) {
-    console.error('Error fetching voter profiles:', profilesError);
-    showError('Failed to load voter list.');
-    throw new Error(profilesError.message);
-  }
+  data.forEach(vote => {
+    // The 'profiles' property can be an array or an object. We handle the object case.
+    const profile = Array.isArray(vote.profiles) ? vote.profiles[0] : vote.profiles;
+    
+    if (vote.user_id && !uniqueVoters.has(vote.user_id)) {
+      uniqueVoters.set(vote.user_id, {
+        user_id: vote.user_id,
+        username: profile?.username || null,
+        full_name: profile?.full_name || null,
+      });
+    }
+  });
 
-  // Step 4: Combine the data and return it
-  return profiles?.map(profile => ({
-    user_id: profile.id,
-    username: profile.username,
-    full_name: profile.full_name,
-  })) || [];
+  return Array.from(uniqueVoters.values());
 };
 
 export const usePollVoters = (pollId: string, enabled: boolean = true) => {
