@@ -4,13 +4,14 @@ import { usePollResults } from '@/hooks/use-poll-results';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
-import { Vote, Clock, CheckCircle, Heart, Bookmark, ShoppingCart } from 'lucide-react';
+import { Vote, Clock, Star, Bookmark, ShoppingCart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
 import { useUserFavorites } from '@/hooks/use-user-favorites';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import { usePollCart } from '@/hooks/use-poll-cart';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PollResultSummaryCardProps {
   poll: Poll;
@@ -42,7 +43,16 @@ const PollResultSummaryCard: React.FC<PollResultSummaryCardProps> = ({ poll }) =
         <CardHeader className="pb-3">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-2">
-              {isOwner && <Heart className="h-5 w-5 text-red-500 fill-red-500 flex-shrink-0" title="My Poll" />}
+              {isOwner && (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Star className="h-5 w-5 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Created by You</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
               <CardTitle className="text-xl line-clamp-2 group-hover:text-primary transition-colors">{poll.title}</CardTitle>
             </div>
             <Badge variant={isActive ? "default" : "destructive"} className="ml-4">{isActive ? "Active" : "Closed"}</Badge>

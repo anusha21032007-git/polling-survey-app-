@@ -12,7 +12,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
-import { Pencil, BarChart3, Share2, ArrowLeft, Heart, Bookmark } from 'lucide-react';
+import { Pencil, BarChart3, Share2, ArrowLeft, Star, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/use-user-role';
 import {
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useUserFavorites } from '@/hooks/use-user-favorites';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PollDetailViewProps {
   poll: Poll;
@@ -179,7 +180,16 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
                 <ArrowLeft className="h-6 w-6" />
             </Button>
             <div className="flex items-center gap-2">
-              {isPollOwner && <Heart className="h-6 w-6 text-red-500 fill-red-500 flex-shrink-0" title="My Poll" />}
+              {isPollOwner && (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Star className="h-6 w-6 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Created by You</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
               <CardTitle className="text-2xl md:text-3xl">{poll.title}</CardTitle>
             </div>
           </div>
