@@ -185,62 +185,64 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll }) => {
           </div>
           
           {/* Right side: Action buttons and badges */}
-          <div className="flex items-center justify-end self-end md:self-auto flex-wrap gap-2">
-            {/* Status and type badges are always shown */}
-            {renderStatusBadge()}
-            <Badge variant="secondary" className="capitalize">
-              {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
-            </Badge>
-            
-            {/* Share Button */}
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  title="Share Poll"
-                >
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Share Poll</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Copy the link below to share this poll with others.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="p-2 bg-muted rounded-md text-sm overflow-x-auto">
-                  <code>{window.location.href}</code>
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleShare}>Copy Link</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+          <div className="flex flex-col items-end gap-2 md:flex-row md:items-center">
+            <div className="flex items-center gap-2">
+              {renderStatusBadge()}
+              <Badge variant="secondary" className="capitalize">
+                {isSingleChoice ? 'Single Choice' : 'Multiple Choice'}
+              </Badge>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Share Button */}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    title="Share Poll"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Share Poll</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Copy the link below to share this poll with others.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="p-2 bg-muted rounded-md text-sm overflow-x-auto">
+                    <code>{window.location.href}</code>
+                  </div>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleShare}>Copy Link</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
 
-            {/* Results Button */}
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={() => navigate(`/polls/${poll.id}/results`)}
-              title="View Results"
-            >
-              <BarChart3 className="h-4 w-4" />
-            </Button>
-
-            {/* Edit Button (Owner only) */}
-            {isPollOwner && (
+              {/* Results Button */}
               <Button 
                 variant="outline" 
                 size="icon" 
-                onClick={() => navigate(`/polls/${poll.id}/edit`)}
-                title="Edit Poll"
+                onClick={() => navigate(`/polls/${poll.id}/results`)}
+                title="View Results"
               >
-                <Pencil className="h-4 w-4" />
+                <BarChart3 className="h-4 w-4" />
               </Button>
-            )}
+
+              {/* Edit Button (Owner only) */}
+              {isPollOwner && (
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  onClick={() => navigate(`/polls/${poll.id}/edit`)}
+                  title="Edit Poll"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
         {poll.description && (
