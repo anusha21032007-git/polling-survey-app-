@@ -13,7 +13,7 @@ import { showSuccess, showError } from '@/utils/toast';
 import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
 import { Pencil, BarChart3, ArrowLeft, Star, Bookmark } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSavedPolls } from '@/hooks/use-saved-polls';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -179,7 +179,20 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll, anonymousVoterNam
         ) : !isPollActive ? (
           <div className="p-4 bg-red-100 text-red-800 rounded-md dark:bg-red-900 dark:text-red-200 text-center">This poll is closed and cannot accept new votes.</div>
         ) : hasVotedAnonymously ? (
-          <div className="p-4 bg-green-100 text-green-800 rounded-md dark:bg-green-900 dark:text-green-200 text-center">Thank you for voting!</div>
+          <div className="space-y-4 text-center">
+            <div className="p-4 bg-green-100 text-green-800 rounded-md dark:bg-green-900 dark:text-green-200">
+              Thank you for voting!
+            </div>
+            <div className="p-6 border rounded-lg bg-card animate-fade-in">
+              <h4 className="text-lg font-semibold">Want to create your own polls?</h4>
+              <p className="text-muted-foreground mt-2">
+                Sign up for a free account to create, share, and analyze your own polls.
+              </p>
+              <Button asChild className="mt-4">
+                <Link to="/login">Get Started for Free</Link>
+              </Button>
+            </div>
+          </div>
         ) : (
           <>
             <h3 className="text-xl font-semibold">{hasVoted ? 'Update Your Vote' : 'Cast Your Vote'}</h3>
