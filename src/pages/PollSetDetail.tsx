@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePollSet } from '@/hooks/use-poll-set';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import PollDetailView from '@/components/PollDetailView';
 import { Button } from '@/components/ui/button';
 import { Share2 } from 'lucide-react';
 import {
@@ -20,11 +17,13 @@ import {
 import { showSuccess, showError } from '@/utils/toast';
 import { useSupabaseSession } from '@/integrations/supabase/session-context';
 import AnonymousVoterGate from '@/components/AnonymousVoterGate';
+import PollDetailView from '@/components/PollDetailView';
+import PollPageSkeleton from '@/components/PollPageSkeleton';
 
 const PollSetDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const setId = id || '';
-  const { data: pollSet, isLoading, isError, error } = usePollSet(setId);
+  const { data: pollSet, isLoading: isPollLoading, isError, error } = usePollSet(setId);
   const { user, isLoading: isSessionLoading } = useSupabaseSession();
   const [anonymousVoterName, setAnonymousVoterName] = useState<string | null>(() => sessionStorage.getItem('anonymousVoterName'));
 
@@ -42,21 +41,9 @@ const PollSetDetail: React.FC = () => {
     setAnonymousVoterName(name);
   };
 
-  if (isLoading || isSessionLoading) {
-    return (
-      <div className="max-w-3xl mx-auto space-y-6">
-        <Skeleton className="h-10 w-3/4" />
-        <Card>
-          <CardHeader><Skeleton className="h-6 w-1/2" /></CardHeader>
-          <CardContent className="space-y-4"><Skeleton className="h-96 w-full" /></CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Gate for anonymous users
-  if (!user && !anonymousVoterName) {
-    return <AnonymousVoterGate onNameProvided={handleNameProvided} />;
+  // Prioritize showing the skeleton while poll data is loading.
+  if (isPollLoading) {
+    return <PollPageSkeleton />;
   }
 
   if (isError) {
@@ -71,6 +58,17 @@ const PollSetDetail: React.FC = () => {
     );
   }
 
+  // After poll data is loaded, check the session. Show skeleton if it's still resolving.
+  if (isSessionLoading) {
+    return <PollPageSkeleton />;
+  }
+
+  // Session is resolved. If user is anonymous, show the name gate.
+  if (!user && !anonymousVoterName) {
+    return <AnonymousVoterGate onNameProvided={handleNameProvided} />;
+  }
+
+  // All checks passed, render the full poll set.
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div className="flex justify-between items-start">

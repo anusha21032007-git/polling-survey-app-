@@ -14,7 +14,6 @@ import { format } from 'date-fns';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
 import { Pencil, BarChart3, ArrowLeft, Star, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useUserRole } from '@/hooks/use-user-role';
 import { useSavedPolls } from '@/hooks/use-saved-polls';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -26,7 +25,6 @@ interface PollDetailViewProps {
 
 const PollDetailView: React.FC<PollDetailViewProps> = ({ poll, anonymousVoterName }) => {
   const { user } = useSupabaseSession();
-  const { isLoading: isRoleLoading } = useUserRole();
   const currentUserId = useCurrentUserId();
   const isPollOwner = currentUserId === poll.user_id;
   const navigate = useNavigate();
@@ -176,7 +174,7 @@ const PollDetailView: React.FC<PollDetailViewProps> = ({ poll, anonymousVoterNam
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {isRoleLoading || (user && isLoadingVotes) ? (
+        {user && isLoadingVotes ? (
           <div className="text-center text-muted-foreground">Loading poll status...</div>
         ) : !isPollActive ? (
           <div className="p-4 bg-red-100 text-red-800 rounded-md dark:bg-red-900 dark:text-red-200 text-center">This poll is closed and cannot accept new votes.</div>
