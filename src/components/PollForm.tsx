@@ -56,11 +56,11 @@ interface PollFormProps {
   poll?: Poll; // Optional poll data for editing
   onSubmit: (data: PollFormValues) => void;
   isSubmitting: boolean;
-  onDelete?: () => void; // Optional delete handler
+  deleteAction?: React.ReactNode; // Optional delete action component
   isDeleting?: boolean;
 }
 
-const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting, onDelete, isDeleting }) => {
+const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting, deleteAction, isDeleting }) => {
   
   const defaultValues: PollFormValues = {
     title: poll?.title || "",
@@ -229,11 +229,7 @@ const PollForm: React.FC<PollFormProps> = ({ poll, onSubmit, isSubmitting, onDel
         </Card>
 
         <div className="flex justify-end space-x-4 pt-4">
-          {poll && onDelete && (
-            <Button type="button" variant="destructive" onClick={onDelete} disabled={isSubmitting || isDeleting}>
-              {isDeleting ? "Deleting..." : "Delete Poll"}
-            </Button>
-          )}
+          {poll && deleteAction}
           <Button type="submit" disabled={isSubmitting || isDeleting}>
             {isSubmitting ? (poll ? "Saving..." : "Posting...") : (poll ? "Save Changes" : "Post Poll")}
           </Button>

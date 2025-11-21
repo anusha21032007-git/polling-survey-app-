@@ -115,16 +115,15 @@ const EditPoll: React.FC = () => {
           poll={poll} 
           onSubmit={handleSubmit} 
           isSubmitting={isSubmitting}
-          onDelete={handleDelete} // Pass the actual delete handler here
           isDeleting={isDeleting}
-        />
-        <div className="flex justify-end space-x-4 pt-4">
+          deleteAction={
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" disabled={isSubmitting || isDeleting}>
-                    Delete Poll
-                </Button>
+              <Button type="button" variant="destructive" disabled={isSubmitting || isDeleting}>
+                Delete Poll
+              </Button>
             </AlertDialogTrigger>
-        </div>
+          }
+        />
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
