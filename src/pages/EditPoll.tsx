@@ -84,8 +84,8 @@ const EditPoll: React.FC = () => {
     } else {
       showSuccess('Poll updated successfully!');
       queryClient.invalidateQueries({ queryKey: ['poll', pollId] }); 
-      queryClient.invalidateQueries({ queryKey: ['polls'] }); 
-      navigate(`/polls/${pollId}`); 
+      queryClient.invalidateQueries({ queryKey: ['poll_sets'] }); 
+      navigate('/'); 
     }
   };
 
@@ -99,7 +99,7 @@ const EditPoll: React.FC = () => {
       showError('Failed to delete poll. Please try again.');
     } else {
       showSuccess('Poll deleted successfully.');
-      queryClient.invalidateQueries({ queryKey: ['polls'] });
+      queryClient.invalidateQueries({ queryKey: ['poll_sets'] });
       navigate('/');
     }
   };
