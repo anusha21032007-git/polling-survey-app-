@@ -45,34 +45,34 @@ const PollSetCard: React.FC<PollSetCardProps> = ({ pollSet }) => {
 
   return (
     <AlertDialog>
-      <div className="relative group">
-        <Link to={`/sets/${pollSet.id}`} className="block">
-          <Card className="hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02] cursor-pointer h-full flex flex-col">
-            <CardHeader className="p-4 pb-2">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-2">
-                  {isOwner && (
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Star className="h-5 w-5 text-yellow-500 fill-yellow-500 flex-shrink-0" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Created by You</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                  <CardTitle className="text-xl">{pollSet.title}</CardTitle>
-                </div>
-                <Badge variant={isActive ? "default" : "destructive"}>
-                  {isActive ? "Active" : "Closed"}
-                </Badge>
+      <Link to={`/sets/${pollSet.id}`} className="block group h-full">
+        <Card className="hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02] cursor-pointer h-full flex flex-col">
+          <CardHeader className="p-4 pb-2">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-2">
+                {isOwner && (
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Star className="h-5 w-5 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Created by You</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                <CardTitle className="text-xl">{pollSet.title}</CardTitle>
               </div>
-              {pollSet.description && (
-                <CardDescription className="mt-1 line-clamp-2">{pollSet.description}</CardDescription>
-              )}
-            </CardHeader>
-            <CardContent className="mt-auto p-4 pt-0">
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <Badge variant={isActive ? "default" : "destructive"}>
+                {isActive ? "Active" : "Closed"}
+              </Badge>
+            </div>
+            {pollSet.description && (
+              <CardDescription className="mt-1 line-clamp-2">{pollSet.description}</CardDescription>
+            )}
+          </CardHeader>
+          <CardContent className="mt-auto p-4 pt-0">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <div className="flex items-center gap-4">
                 <span className="flex items-center">
                   <ListChecks className="h-4 w-4 mr-1.5" />
                   {totalPolls} {totalPolls === 1 ? 'Poll' : 'Polls'}
@@ -82,23 +82,23 @@ const PollSetCard: React.FC<PollSetCardProps> = ({ pollSet }) => {
                   {creatorName}
                 </span>
               </div>
-            </CardContent>
-          </Card>
-        </Link>
-        {isOwner && (
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="destructive"
-              size="icon"
-              className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={handleTriggerClick}
-              aria-label="Delete poll set"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </AlertDialogTrigger>
-        )}
-      </div>
+              {isOwner && (
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={handleTriggerClick}
+                    aria-label="Delete poll set"
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </AlertDialogTrigger>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
