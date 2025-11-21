@@ -20,7 +20,7 @@ const AnonymousVoterGate: React.FC<AnonymousVoterGateProps> = ({ onNameProvided 
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-10rem)]">
+    <div className="flex items-center justify-center">
       <Card className="w-full max-w-md">
         <form onSubmit={handleSubmit}>
           <CardHeader>
