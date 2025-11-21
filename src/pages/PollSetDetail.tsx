@@ -49,13 +49,13 @@ const PollSetDetail: React.FC = () => {
     return <div className="max-w-3xl mx-auto text-destructive p-6">Error loading poll set: {error?.message || 'Unknown error'}</div>;
   }
 
-  if (!pollSet) {
+  if (!pollSet || pollSet.polls.length === 0) {
     return (
       <div className="max-w-3xl mx-auto text-center p-10 border rounded-lg bg-muted/50 flex flex-col items-center gap-4">
         <Frown className="h-16 w-16 text-muted-foreground" />
         <h2 className="text-2xl font-semibold">Poll Set Not Found</h2>
         <p className="text-lg text-muted-foreground">
-          This poll set is no longer available. It may have been deleted by its creator.
+          This poll set is no longer available. It may have been deleted by its creator or contains no polls.
         </p>
         <Button asChild className="mt-4">
           <Link to="/">Go back to Home</Link>
