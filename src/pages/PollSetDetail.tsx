@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { usePollSet } from '@/hooks/use-poll-set';
 import { Button } from '@/components/ui/button';
-import { Share2, User } from 'lucide-react';
+import { Share2, User, Frown } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,8 +51,15 @@ const PollSetDetail: React.FC = () => {
 
   if (!pollSet) {
     return (
-      <div className="max-w-3xl mx-auto text-center p-10 border rounded-lg bg-muted/50">
-        <p className="text-lg text-muted-foreground">Poll set not found.</p>
+      <div className="max-w-3xl mx-auto text-center p-10 border rounded-lg bg-muted/50 flex flex-col items-center gap-4">
+        <Frown className="h-16 w-16 text-muted-foreground" />
+        <h2 className="text-2xl font-semibold">Poll Set Not Found</h2>
+        <p className="text-lg text-muted-foreground">
+          This poll set is no longer available. It may have been deleted by its creator.
+        </p>
+        <Button asChild className="mt-4">
+          <Link to="/">Go back to Home</Link>
+        </Button>
       </div>
     );
   }
