@@ -3,7 +3,7 @@ import { PollSet } from '@/types/poll';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
-import { ListChecks, Star } from 'lucide-react';
+import { ListChecks, Star, User } from 'lucide-react';
 import { useCurrentUserId } from '@/hooks/use-current-user-id';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -16,6 +16,7 @@ const PollSetCard: React.FC<PollSetCardProps> = ({ pollSet }) => {
   const isActive = pollSet.polls?.some(p => p.is_active && (!p.due_at || new Date(p.due_at) > new Date()));
   const currentUserId = useCurrentUserId();
   const isOwner = pollSet.user_id === currentUserId;
+  const creatorName = pollSet.profiles?.full_name || pollSet.profiles?.username || 'Anonymous';
 
   return (
     <Link to={`/sets/${pollSet.id}`} className="block group">
@@ -44,10 +45,14 @@ const PollSetCard: React.FC<PollSetCardProps> = ({ pollSet }) => {
           )}
         </CardHeader>
         <CardContent className="mt-auto p-4 pt-0">
-          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
             <span className="flex items-center">
               <ListChecks className="h-4 w-4 mr-1.5" />
               {totalPolls} {totalPolls === 1 ? 'Poll' : 'Polls'}
+            </span>
+            <span className="flex items-center">
+              <User className="h-4 w-4 mr-1.5" />
+              {creatorName}
             </span>
           </div>
         </CardContent>

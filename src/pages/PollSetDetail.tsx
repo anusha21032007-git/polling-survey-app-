@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePollSet } from '@/hooks/use-poll-set';
 import { Button } from '@/components/ui/button';
-import { Share2 } from 'lucide-react';
+import { Share2, User } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,7 +41,6 @@ const PollSetDetail: React.FC = () => {
     setAnonymousVoterName(name);
   };
 
-  // Prioritize showing the skeleton while poll data is loading.
   if (isPollLoading) {
     return <PollPageSkeleton />;
   }
@@ -58,23 +57,26 @@ const PollSetDetail: React.FC = () => {
     );
   }
 
-  // After poll data is loaded, check the session. Show skeleton if it's still resolving.
   if (isSessionLoading) {
     return <PollPageSkeleton />;
   }
 
-  // Session is resolved. If user is anonymous, show the name gate.
   if (!user && !anonymousVoterName) {
     return <AnonymousVoterGate onNameProvided={handleNameProvided} />;
   }
 
-  // All checks passed, render the full poll set.
+  const creatorName = pollSet.profiles?.full_name || pollSet.profiles?.username || 'Anonymous';
+
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-4xl font-bold">{pollSet.title}</h1>
           {pollSet.description && <p className="text-lg text-muted-foreground mt-2">{pollSet.description}</p>}
+          <div className="flex items-center text-sm text-muted-foreground mt-2">
+            <User className="h-4 w-4 mr-2" />
+            <span>Created by {creatorName}</span>
+          </div>
         </div>
         <AlertDialog>
           <AlertDialogTrigger asChild>

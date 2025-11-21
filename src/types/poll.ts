@@ -18,6 +18,11 @@ export interface Poll {
   poll_set_id: string;
 }
 
+export interface ProfileInfo {
+  full_name: string | null;
+  username: string | null;
+}
+
 export interface PollSet {
   id: string;
   user_id: string;
@@ -25,4 +30,5 @@ export interface PollSet {
   description: string | null;
   created_at: string;
   polls: Poll[]; // Contains the array of polls within this set
+  profiles: ProfileInfo | null;
 }

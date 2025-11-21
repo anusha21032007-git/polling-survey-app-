@@ -6,7 +6,7 @@ import { showError } from '@/utils/toast';
 const fetchPollSet = async (setId: string): Promise<PollSet> => {
   const { data, error } = await supabase
     .from('poll_sets')
-    .select('*, polls(*)')
+    .select('*, polls(*), profiles(full_name, username)')
     .eq('id', setId)
     .single();
 
